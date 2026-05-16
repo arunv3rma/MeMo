@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeMo: Memory as a Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --serif: 'Lora', Georgia, serif;
+  --sans:  'Outfit', -apple-system, sans-serif;
+  --mono:  'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  --toc-w: 172px;
+  --col:   740px;
+  --bg:    #06091a; --bg1: #0a0e24; --bg2: #0e1330; --bg3: #131838; --bg4: #191f42;
+  --a:     #22d3ee; --a2:  #67e8f9; --a-dim: rgba(34,211,238,.14);
+  --b:     #a78bfa; --b-dim: rgba(167,139,250,.15);
+  --g:     #34d399; --g-dim: rgba(52,211,153,.12);
+  --border: rgba(255,255,255,.07); --border2: rgba(255,255,255,.13);
+  --t1: #f0f6ff; --t2: #bdd0e8; --t3: #7a97b8; --t4: #4a6080; --t5: #2e3d55;
+}
+[data-theme="light"] {
+  --bg: #f5f8fc; --bg1: #edf2f8; --bg2: #e4ecf5; --bg3: #d8e5f0; --bg4: #c8d8ea;
+  --a: #0891b2; --a2: #0e7490; --a-dim: rgba(8,145,178,.12);
+  --b: #7c3aed; --b-dim: rgba(124,58,237,.12);
+  --g: #059669; --g-dim: rgba(5,150,105,.10);
+  --border: rgba(0,0,0,.08); --border2: rgba(0,0,0,.15);
+  --t1: #0f172a; --t2: #1e3a5f; --t3: #3d5a80; --t4: #607d99; --t5: #9ab0c4;
+}
+
+/* ─── RESET ─────────────────────────────────────────────── */
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box }
+html { scroll-behavior:smooth; scroll-padding-top:56px }
+body { font-family:var(--sans); background:var(--bg); color:var(--t2); font-size:17px; line-height:1.8; -webkit-font-smoothing:antialiased }
+a { color:var(--a); text-decoration:none; transition:color .15s }
+a:hover { color:var(--a2) }
+::selection { background:var(--a); color:#000 }
+img { max-width:100%; display:block }
+[id] { scroll-margin-top:56px }
+
+/* ─── HERO ───────────────────────────────────────────────── */
+.hero { position:relative; padding:100px 32px 84px; text-align:center; overflow:hidden }
+.hero-dots {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:radial-gradient(circle, rgba(34,211,238,.20) 1.5px, transparent 1.5px);
+  background-size:38px 38px;
+  mask-image:radial-gradient(ellipse 75% 85% at 50% 0%, black 25%, transparent 78%);
+  animation:dot-pulse 6s ease-in-out infinite;
+}
+@keyframes dot-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+.hero-glow {
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -15%, rgba(34,211,238,.22) 0%, transparent 62%),
+    radial-gradient(ellipse 40% 28% at 15% 92%, rgba(167,139,250,.10) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 25% at 85% 88%, rgba(52,211,153,.07) 0%, transparent 50%);
+}
+.hero-inner { position:relative; max-width:860px; margin:0 auto }
+.hero-venue {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:4px 16px 4px 12px; border-radius:20px;
+  background:var(--a-dim); border:1px solid rgba(34,211,238,.30);
+  font-size:11.5px; font-weight:700; color:var(--a);
+  letter-spacing:.10em; text-transform:uppercase; margin-bottom:32px;
+}
+.venue-dot { width:6px; height:6px; border-radius:50%; background:var(--a); animation:blink 2.4s ease-in-out infinite }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+.hero-title { display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:24px; flex-wrap:wrap }
+.hero-logo { width:72px; height:72px; object-fit:contain; flex-shrink:0; animation:logo-float 3.6s ease-in-out infinite; transform-origin:center bottom; cursor:default }
+@keyframes logo-float {
+  0%,100% { transform:translateY(0)    rotate(-2deg) scale(1.00); filter:drop-shadow(0 4px 14px rgba(34,211,238,.32)) }
+  30%     { transform:translateY(-10%) rotate( 1deg) scale(1.05); filter:drop-shadow(0 10px 22px rgba(34,211,238,.58)) }
+  65%     { transform:translateY(-5%)  rotate(-1deg) scale(1.02); filter:drop-shadow(0 7px 16px rgba(167,139,250,.42)) }
+}
+.hero-logo:hover { animation:logo-spin-bounce .55s cubic-bezier(.36,.07,.19,.97) forwards }
+@keyframes logo-spin-bounce {
+  0%   { transform:rotate(0deg)   scale(1.00) }
+  25%  { transform:rotate(-15deg) scale(1.14) }
+  55%  { transform:rotate( 12deg) scale(1.09) }
+  80%  { transform:rotate( -5deg) scale(1.04) }
+  100% { transform:rotate(  0deg) scale(1.00) }
+}
+.hero h1 { font-family:var(--serif); font-size:clamp(38px,6vw,64px); font-weight:700; color:var(--t1); letter-spacing:-.03em; line-height:1.08; margin-bottom:0 }
+.hero h1 em { font-style:italic; color:var(--a) }
+.hero-tagline { font-size:18px; color:var(--t3); max-width:610px; margin:0 auto 36px; line-height:1.65; font-weight:300 }
+.hero-authors { font-size:14.5px; color:var(--t3); line-height:2.1; margin-bottom:28px }
+.hero-authors .name { color:var(--t2); font-weight:500 }
+.hero-authors sup { font-size:10px; color:var(--t4) }
+.eq { color:var(--a); font-size:10px }
+.affils { font-size:12.5px; color:var(--t4); margin-top:4px; line-height:1.9 }
+.hero-btns { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap }
+.btn { display:inline-flex; align-items:center; gap:6px; padding:9px 22px; border-radius:24px; font-family:var(--sans); font-size:13.5px; font-weight:600; border:none; cursor:pointer; transition:all .18s }
+.btn-arxiv { background:#b31b1b; color:#fff }
+.btn-arxiv:hover { background:#8f1313; color:#fff }
+.btn-github { background:#24292e; color:#fff }
+.btn-github:hover { background:#3d444d; color:#fff }
+.btn-ghost { background:transparent; border:1px solid var(--border2); color:var(--t2) }
+.btn-ghost:hover { background:var(--bg3); color:var(--t1) }
+.hero-scroll { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px; opacity:0; animation:sfade 1s ease 1.2s forwards }
+@keyframes sfade { to { opacity:.4 } }
+.scroll-line { width:1px; height:40px; background:linear-gradient(180deg,var(--a),transparent); animation:sline 2s ease-in-out infinite }
+@keyframes sline { 0%,100%{transform:scaleY(1);opacity:.6} 50%{transform:scaleY(.6);opacity:.25} }
+.scroll-text { font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--t5) }
+
+/* ─── TLDR ───────────────────────────────────────────────── */
+.tldr-wrap { background:linear-gradient(135deg,rgba(34,211,238,.09) 0%,rgba(167,139,250,.07) 100%); border-top:1px solid rgba(34,211,238,.20); border-bottom:1px solid rgba(167,139,250,.14); padding:36px 32px }
+.tldr-inner { max-width:var(--col); margin:0 auto; display:flex; gap:20px; align-items:flex-start }
+.tldr-badge { flex-shrink:0; background:var(--a); color:#000; font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; padding:4px 12px; border-radius:4px; margin-top:5px }
+.tldr-text { font-size:17px; color:var(--t1); line-height:1.75 }
+.tldr-text strong { color:var(--a) }
+@media(max-width:640px){ .tldr-inner { flex-direction:column; gap:12px } }
+
+/* ─── PAGE LAYOUT ────────────────────────────────────────── */
+.page { max-width:calc(var(--col) + var(--toc-w) + 80px); margin:0 auto; padding:0 32px 120px; display:grid; grid-template-columns:var(--toc-w) 1fr; gap:0 56px; align-items:start }
+@media(max-width:980px) { .page { grid-template-columns:1fr } .toc { display:none } }
+@media(max-width:640px) { .page { padding:0 20px 80px } }
+
+/* ─── TOC ────────────────────────────────────────────────── */
+.toc { position:sticky; top:28px; padding:32px 0 0; max-height:calc(100vh - 56px); overflow-y:auto; opacity:0; transform:translateY(8px); transition:opacity .4s ease, transform .4s ease }
+.toc.ready { opacity:1; transform:translateY(0) }
+.toc-label { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--t5); margin-bottom:12px }
+.toc a { display:block; font-size:12.5px; color:var(--t4); padding:4px 0 4px 12px; border-left:2px solid transparent; transition:all .15s; line-height:1.4 }
+.toc a:hover { color:var(--t2) }
+.toc a.active { color:var(--t1); border-left-color:var(--a); font-weight:500 }
+.toc a.sub { padding-left:22px; font-size:12px }
+
+/* ─── ARTICLE ────────────────────────────────────────────── */
+.article { min-width:0; padding:56px 0 0 }
+.article section { margin-bottom:80px }
+.kicker { font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--a); margin-bottom:10px }
+.article h2 { font-family:var(--serif); font-size:32px; font-weight:700; color:var(--t1); letter-spacing:-.03em; line-height:1.15; margin-bottom:22px }
+.article h3 { font-family:var(--serif); font-size:21px; font-weight:600; color:var(--t1); letter-spacing:-.02em; margin:44px 0 13px }
+.article p { margin-bottom:20px }
+.article p:last-child { margin-bottom:0 }
+.article strong { color:var(--t1); font-weight:600 }
+.article hr { border:none; height:1px; background:linear-gradient(90deg,transparent,var(--border2),transparent); margin:72px 0 }
+
+/* ─── FIGURE ─────────────────────────────────────────────── */
+.figure { margin:36px 0 40px; border-radius:16px; overflow:hidden; border:1px solid var(--border2); background:var(--bg1); transition:border-color .25s, transform .25s }
+.figure:hover { border-color:rgba(34,211,238,.28); transform:translateY(-2px) }
+.figure-caption { padding:14px 24px 18px; font-size:13px; color:var(--t4); line-height:1.6; border-top:1px solid var(--border) }
+.figure-caption strong { color:var(--t3) }
+
+/* ─── PIPELINE ───────────────────────────────────────────── */
+.memo-pipeline { display:flex; flex-direction:column }
+.phase-block { padding:26px 28px 22px }
+.phase-header { display:flex; align-items:center; gap:12px; margin-bottom:18px; flex-wrap:wrap }
+.pipe-divider { display:none }
+.pcol-label { font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase }
+.pcol-label.tr { color:var(--a) } .pcol-label.inf { color:var(--b) }
+.col-badge { display:inline-flex; align-items:center; padding:5px 16px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:.10em; text-transform:uppercase }
+.bt { background:var(--a-dim); border:1px solid rgba(34,211,238,.35); color:var(--a) }
+.bv { background:var(--b-dim); border:1px solid rgba(167,139,250,.35); color:var(--b) }
+.model-chip { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:4px 12px; border-radius:6px }
+.ct { background:var(--a-dim); color:var(--a); border:1px solid rgba(34,211,238,.2) }
+.cv { background:var(--b-dim); color:var(--b); border:1px solid rgba(167,139,250,.2) }
+.steps-row { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:14px }
+.steps-row-inf { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px }
+@media(max-width:680px) { .steps-row { grid-template-columns:1fr 1fr } .steps-row-inf { grid-template-columns:1fr } }
+.step-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:14px 12px; transition:border-color .2s, transform .2s }
+.step-card:hover { transform:translateY(-2px) }
+.step-card.tc:hover { border-color:rgba(34,211,238,.38) }
+.step-card.vc:hover { border-color:rgba(167,139,250,.38) }
+.pnum { width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-bottom:9px }
+.pt { background:var(--a-dim); color:var(--a); border:1px solid rgba(34,211,238,.3) }
+.pv { background:var(--b-dim); color:var(--b); border:1px solid rgba(167,139,250,.3) }
+.ps-title { font-size:13px; font-weight:700; color:var(--t1); margin-bottom:5px }
+.ps-desc  { font-size:12px; color:var(--t3); line-height:1.55 }
+.parrow { display:none }
+.pipe-sum { padding:12px 16px; border-radius:10px; margin-top:4px }
+.pst { background:var(--a-dim); border:1px solid rgba(34,211,238,.2) }
+.psv { background:var(--b-dim); border:1px solid rgba(167,139,250,.2) }
+.pslabel { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px }
+.pst .pslabel { color:var(--a) } .psv .pslabel { color:var(--b) }
+.psbody { font-size:12.5px; color:var(--t3) }
+.phase-connector { display:flex; align-items:center; justify-content:center; gap:14px; padding:12px 28px; background:var(--bg); border-top:1px solid var(--border); border-bottom:1px solid var(--border) }
+.connector-line { flex:1; height:1px }
+.connector-line.tl { background:linear-gradient(90deg,transparent,rgba(34,211,238,.4)) }
+.connector-line.tr { background:linear-gradient(90deg,rgba(167,139,250,.4),transparent) }
+.connector-text { font-size:10.5px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:var(--t5); white-space:nowrap }
+.connector-arrow { font-size:22px; color:var(--t4) }
+.pipe-legend { display:flex; gap:16px; flex-wrap:wrap; padding:12px 28px; border-top:1px solid var(--border); background:var(--bg) }
+.leg { display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--t4) }
+.leg-sw { width:12px; height:12px; border-radius:3px; flex-shrink:0 }
+
+/* ─── PROPERTY TABLE ──────────────────────────────────────── */
+.ptable { width:100%; border-collapse:collapse; font-size:13.5px; margin:28px 0 }
+.ptable th { padding:10px 14px; font-size:10.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--t4); background:var(--bg2); border-bottom:1px solid var(--border); text-align:center }
+.ptable th:first-child { text-align:left }
+.ptable td { padding:11px 14px; color:var(--t2); border-bottom:1px solid var(--border); text-align:center }
+.ptable td:first-child { text-align:left; font-weight:500; color:var(--t1) }
+.ptable tr:last-child td { border-bottom:none; color:var(--a); font-weight:600 }
+.ptable tr:hover td { background:var(--bg2) }
+.ck { color:var(--g); font-size:15px } .cx { color:var(--t5); font-size:15px }
+
+/* ─── STAGE FLOW ──────────────────────────────────────────── */
+.stage-flow { display:flex; flex-direction:column; margin:28px 0 }
+.stage { display:flex; gap:16px; padding:20px 18px; background:var(--bg2); border:1px solid var(--border); transition:background .18s }
+.stage:first-child { border-radius:14px 14px 0 0 }
+.stage:last-child  { border-radius:0 0 14px 14px }
+.stage:not(:last-child) { border-bottom:none }
+.stage:hover { background:var(--bg3) }
+.snum { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0; font-family:var(--serif) }
+.s1 { background:var(--a-dim); color:var(--a); border:1px solid rgba(34,211,238,.3) }
+.s2 { background:var(--b-dim); color:var(--b); border:1px solid rgba(167,139,250,.3) }
+.s3 { background:var(--g-dim); color:var(--g); border:1px solid rgba(52,211,153,.3) }
+.s4 { background:rgba(251,146,60,.12); color:#fb923c; border:1px solid rgba(251,146,60,.3) }
+.s5 { background:rgba(244,63,94,.12); color:#f43f5e; border:1px solid rgba(244,63,94,.3) }
+.stitle { font-size:15px; font-weight:700; color:var(--t1); margin-bottom:5px }
+.sdesc  { font-size:13.5px; color:var(--t3); line-height:1.6; margin:0 }
+
+/* ─── CALLOUT ─────────────────────────────────────────────── */
+.callout { background:var(--a-dim); border-left:3px solid var(--a); border-radius:0 12px 12px 0; padding:20px 24px; margin:32px 0; font-family:var(--serif); font-size:18px; font-style:italic; color:var(--t1); line-height:1.65 }
+.callout strong { font-style:normal; color:var(--a) }
+.callout-v { background:var(--b-dim); border-left-color:var(--b) }
+.callout-v strong { color:var(--b) }
+
+/* ─── STATS ──────────────────────────────────────────────── */
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:32px 0 }
+@media(max-width:540px) { .stats { grid-template-columns:1fr 1fr } }
+.stat { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:24px 18px; text-align:center; transition:border-color .2s, transform .22s }
+.stat:hover { border-color:var(--border2); transform:translateY(-3px) }
+.stat-num { font-family:var(--serif); font-size:46px; font-weight:700; line-height:1; margin-bottom:9px }
+.ca { color:var(--a) } .cb { color:var(--b) } .cg { color:var(--g) }
+.stat-desc { font-size:13px; color:var(--t3); line-height:1.45 }
+
+/* ─── RESULTS TABLE ───────────────────────────────────────── */
+.rtable { width:100%; border-collapse:collapse; font-size:13px; margin:24px 0 }
+.rtable th { padding:9px 11px; font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--t4); background:var(--bg2); border-bottom:1px solid var(--border); text-align:left }
+.rtable td { padding:10px 11px; color:var(--t2); border-bottom:1px solid var(--border) }
+.ctr { text-align:center }
+.rtable tr:last-child td { border-bottom:none }
+.rtable .mr td, .ptable .mr td { background:var(--a-dim) }
+.rtable .mr td:first-child, .ptable .mr td:first-child { font-weight:700; color:var(--a) }
+.rtable tr:hover td { background:var(--bg2) }
+.rtable .mr:hover td, .ptable .mr:hover td { background:rgba(34,211,238,.18) }
+.best { color:var(--a); font-weight:700 }
+.mid  { color:var(--b); font-weight:600 }
+.fn { font-size:12px; color:var(--t5); margin-top:-10px; margin-bottom:28px }
+
+/* ─── NOISE CARDS ────────────────────────────────────────── */
+.noise-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:24px 0 }
+@media(max-width:600px) { .noise-grid { grid-template-columns:1fr } }
+.noise-card { border-radius:12px; padding:16px 14px; border:1px solid var(--border) }
+.nc-title { font-size:12px; font-weight:700; color:var(--t3); margin-bottom:10px; text-transform:uppercase; letter-spacing:.07em }
+.nc-row { display:flex; align-items:center; justify-content:space-between; font-size:13px; margin-bottom:6px }
+.nc-name { color:var(--t3) }
+.dbad  { color:#ef4444; font-weight:700; font-family:var(--mono); font-size:12px }
+.dgood { color:var(--g);  font-weight:700; font-family:var(--mono); font-size:12px }
+
+/* ─── TAKEAWAY ────────────────────────────────────────────── */
+.takeaway { position:relative; background:linear-gradient(135deg,var(--bg3) 0%,var(--bg2) 100%); border:1px solid var(--border2); border-radius:20px; padding:40px; margin:36px 0; overflow:hidden; text-align:center }
+.takeaway::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(34,211,238,.06) 0%,transparent 70%); pointer-events:none }
+.takeaway-icon { font-size:40px; margin-bottom:16px; line-height:1 }
+.takeaway-text { font-family:var(--serif); font-size:22px; font-weight:600; font-style:italic; color:var(--t1); line-height:1.55; position:relative; z-index:1 }
+.takeaway-text strong { color:var(--a); font-style:normal }
+
+/* ─── LIMITATION CARDS ────────────────────────────────────── */
+.lim-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:24px 0 }
+@media(max-width:540px) { .lim-grid { grid-template-columns:1fr } }
+.lim-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:18px 16px }
+.lim-title { font-size:14px; font-weight:700; color:var(--t1); margin-bottom:8px; display:flex; align-items:center; gap:7px }
+.lim-dot { width:8px; height:8px; border-radius:50%; background:rgba(251,146,60,.7); flex-shrink:0 }
+.lim-card p { font-size:13.5px; color:var(--t3); margin:0; line-height:1.65 }
+
+/* ─── CODE BLOCK ──────────────────────────────────────────── */
+.codeblock { background:#05070f; border:1px solid var(--border2); border-radius:14px; overflow:hidden; margin:24px 0 }
+.cb-head { display:flex; align-items:center; justify-content:space-between; padding:10px 18px; background:rgba(255,255,255,.025); border-bottom:1px solid var(--border) }
+.cb-lang { font-family:var(--mono); font-size:11px; color:var(--a); letter-spacing:.06em; font-weight:500 }
+.cb-copy { background:none; border:none; font-family:var(--sans); font-size:11px; color:var(--t4); cursor:pointer; padding:3px 10px; border-radius:5px; transition:all .15s }
+.cb-copy:hover { background:var(--bg3); color:var(--t2) }
+.codeblock pre { padding:20px 22px; overflow-x:auto; font-family:var(--mono); font-size:13px; line-height:1.8; color:#7a99b8 }
+.bt-type  { color:#e879f9 } .bt-key { color:var(--a) } .bt-field { color:var(--b) }
+.bt-val   { color:#86efac } .bt-brace { color:var(--t4) }
+
+/* ─── FOOTER ──────────────────────────────────────────────── */
+footer { background:var(--bg1); border-top:1px solid var(--border); padding:56px 32px; text-align:center }
+.footer-logo { display:flex; align-items:center; justify-content:center; gap:12px; font-family:var(--serif); font-size:22px; font-weight:700; color:var(--t1); margin-bottom:10px }
+.footer-logo img { width:36px; height:36px; object-fit:contain; border-radius:7px; opacity:.9 }
+.footer-logo em { color:var(--a); font-style:normal }
+.footer-sub { font-size:14px; color:var(--t4); line-height:1.7; margin-bottom:24px }
+.footer-links { display:flex; gap:20px; justify-content:center; flex-wrap:wrap }
+.footer-links a:not(.btn) { font-size:13px; color:var(--t4) }
+.footer-links a:not(.btn):hover { color:var(--a) }
+.footer-credit { margin-top:24px; font-size:12px; color:var(--t5); line-height:1.6 }
+
+/* ─── UTILS ──────────────────────────────────────────────── */
+.reveal { opacity:0; transform:translateY(20px); transition:opacity .7s ease, transform .7s ease }
+.reveal.on { opacity:1; transform:translateY(0) }
+.hi { color:var(--a); font-weight:600 }
+.hi-b { color:var(--b); font-weight:600 }
+.tag { display:inline-block; font-family:var(--mono); font-size:12.5px; background:var(--bg3); color:var(--b); padding:1px 8px; border-radius:5px; border:1px solid var(--border) }
+
+/* ─── FIXED ──────────────────────────────────────────────── */
+#rp { position:fixed; top:0; left:0; z-index:300; height:2px; width:0%; pointer-events:none; background:linear-gradient(90deg,var(--a) 0%,var(--b) 60%,var(--g) 100%); transition:width .08s linear }
+#tt { position:fixed; bottom:28px; right:28px; z-index:999; width:44px; height:44px; border-radius:50%; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s, transform .15s, box-shadow .2s;
+  background:#1e293b; border:2px solid #0f172a; color:#f59e0b;
+  box-shadow:0 4px 20px rgba(0,0,0,.35), 0 1px 4px rgba(0,0,0,.2);
+}
+[data-theme="dark"] #tt {
+  background:#f8fafc; border:2px solid #e2e8f0; color:#d97706;
+  box-shadow:0 4px 20px rgba(255,255,255,.12), 0 1px 4px rgba(0,0,0,.3);
+}
+#tt:hover { transform:scale(1.1) }
+[data-theme="light"] #tt:hover { background:#334155 }
+[data-theme="dark"]  #tt:hover { background:#e2e8f0 }
+.ico-sun  { display:none }
+.ico-moon { display:block }
+[data-theme="dark"] .ico-sun  { display:block }
+[data-theme="dark"] .ico-moon { display:none }
+
+/* ─── BEAUTIFICATION ─────────────────────────────────────────── */
+body { font-feature-settings: "kern" 1 }
+.article p { line-height: 1.85 }
+
+/* Figure depth */
+.figure { box-shadow: 0 6px 48px rgba(0,0,0,.09) }
+
+/* Roomier callout */
+.callout { padding: 24px 28px }
+
+/* Serif stage titles */
+.stitle { font-family: var(--serif); font-size: 15.5px; letter-spacing: -.01em }
+
+/* Stage timeline connector */
+.stage { position: relative }
+.stage:not(:first-child)::before {
+  content: ''; position: absolute; left: 33px; top: 0; height: 20px;
+  width: 2px; background: var(--border2); border-radius: 1px;
+}
+
+/* Colored left accent per step */
+.stage:has(.s1) { border-left: 3px solid rgba(34,211,238,.45) }
+.stage:has(.s2) { border-left: 3px solid rgba(167,139,250,.45) }
+.stage:has(.s3) { border-left: 3px solid rgba(52,211,153,.45) }
+.stage:has(.s4) { border-left: 3px solid rgba(251,146,60,.45) }
+.stage:has(.s5) { border-left: 3px solid rgba(244,63,94,.45) }
+
+/* TOC right separator */
+@media(min-width:981px) {
+  .toc { border-right: 1px solid var(--border); padding-right: 20px }
+}
+
+/* Table overflow wrapper */
+.table-wrap { overflow: auto; border-radius: 14px; border: 1px solid var(--border); margin: 28px 0 }
+.table-wrap .ptable,
+.table-wrap .rtable { margin: 0 }
+
+/* Noise card hover */
+.noise-card { transition: border-color .18s, transform .18s }
+.noise-card:hover { transform: translateY(-2px); border-color: var(--border2) }
+
+/* Limitation dot color variants */
+.lim-dot-b { background: rgba(167,139,250,.8) }
+.lim-dot-c { background: rgba(239,68,68,.8) }
+.lim-dot-d { background: rgba(34,211,238,.8) }
+
+/* Smoother h2 entry */
+.article h2 { line-height: 1.12 }
+
+/* Better kicker spacing */
+.kicker { margin-bottom: 12px }
+
+/* Tighter footnote */
+.fn { margin-top: 8px }
+</style>
+</head>
+<body>
+
+<div id="rp"></div>
+<button id="tt" onclick="toggleTheme()" title="Toggle theme">
+  <svg class="ico-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="ico-sun"  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+
+<header class="hero">
+  <div class="hero-dots"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    
+    <!-- <div class="hero-venue">
+      <span class="venue-dot"></span>arXiv &middot; May 2026
+    </div> -->
+    <div class="hero-title">
+      <img src="logo.png" alt="MeMo logo" class="hero-logo">
+      <h1><em>MeMo</em>: Memory as a Model</h1>
+    </div>
+
+    <p class="hero-tagline">What if you could teach an LLM new knowledge without touching its weights? MeMo encodes a target corpus into a dedicated Memory model, then lets any frozen LLM query it at inference time: no retrieval index, no forgetting, no parameter access required.</p>
+
+    <div class="hero-authors">
+      <div>
+        <span class="name">Ryan Wei Heng Quek</span><sup>1,2,3,4<span class="eq">*</span></sup>&ensp;
+        <span class="name">Sanghyuk Lee</span><sup>5,6,7<span class="eq">*</span></sup>&ensp;
+        <span class="name">Alfred Wei Lun Leong</span><sup>4,8<span class="eq">*</span></sup>&ensp;
+        <span class="name">Arun Verma</span><sup>9<span class="eq">*†</span></sup>
+      </div>
+      <div>
+        <span class="name">Alok Prakash</span><sup>9</sup>&ensp;
+        <span class="name">Nancy F. Chen</span><sup>3</sup>&ensp;
+        <span class="name">Bryan Kian Hsiang Low</span><sup>1,2,4,9</sup>&ensp;
+        <span class="name">Daniela Rus</span><sup>7,9</sup>&ensp;
+        <span class="name">Armando Solar-Lezama</span><sup>7,9</sup>
+      </div>
+      <div class="affils">
+        <sup>1</sup>Institute of Data Science, National University of Singapore, Singapore<br>
+        <sup>2</sup>Integrative Sciences and Engineering Programme, NUSGS, Singapore<br>
+        <sup>3</sup>Agency for Science, Technology, Research (A*STAR), Singapore<br>
+        <sup>4</sup>Department of Computer Science, National University of Singapore, Singapore<br>
+        <sup>5</sup>University of Tokyo, Japan &nbsp;·&nbsp; <sup>6</sup>Liquid AI, USA<br>
+        <sup>7</sup>CSAIL, Massachusetts Institute of Technology, USA &nbsp;·&nbsp; <sup>8</sup>AI Singapore<br>
+        <sup>9</sup>Singapore-MIT Alliance for Research and Technology Centre, Singapore<br>
+        <span style="color:var(--t5)">(*Equal contribution &nbsp;<sup>†</sup>Corresponding author)</span>
+      </div>
+    </div>
+
+    <div class="hero-btns">
+      <a class="btn btn-arxiv" href="http://arxiv.org/abs/2605.15156" target="_blank">
+        <svg width="11" height="15" viewBox="0 0 74.492 100.25" fill="currentColor"><g transform="translate(-526.086 -245.559)"><path d="M586.72,255.616a3.377,3.377,0,0,1,.448.031,5.917,5.917,0,0,1,3.581,2.79c.454,1.116.314,2.023-1.315,4.141L563.168,293.6l-8.558-10.047,29.348-26.616a4.406,4.406,0,0,1,2.762-1.321m0-1.5a5.766,5.766,0,0,0-3.69,1.643l-.041.032-.038.035L553.6,282.442l-1.077.977.943,1.107,8.558,10.047,1.145,1.344,1.141-1.348,26.267-31.022.022-.027.022-.028c1.574-2.046,2.327-3.622,1.516-5.619a7.309,7.309,0,0,0-4.779-3.714,5.083,5.083,0,0,0-.64-.043Z"/><path d="M553.423,284.593l8.977,10.558L597.911,337.9c.873,1.093,1.419,2.186,1.047,3.418a4.092,4.092,0,0,1-2.721,2.837,3.557,3.557,0,0,1-1.045.159,4,4,0,0,1-2.687-1.124L548.01,300.808c-3.5-3.5-2.971-8.151.436-11.558l4.977-4.657m.124-2.17L552.4,283.5l-4.976,4.656c-4.192,4.191-4.372,9.816-.473,13.714l44.521,42.4a5.485,5.485,0,0,0,3.722,1.538,5.1,5.1,0,0,0,1.483-.224,5.59,5.59,0,0,0,3.719-3.838,5.176,5.176,0,0,0-1.31-4.788l-35.53-42.767-8.988-10.571-1.019-1.2Z"/><path d="M562.4,295.151l9.556,11.5,5.761-5.356a7.926,7.926,0,0,0,.041-11.743l-43.7-41.923s-1.671-2.029-3.437-2.071a4.49,4.49,0,0,0-4.23,2.718c-.688,1.651-.194,2.809,1.315,4.97l29.306,35.565Z"/><path d="M553.7,306.223l-17.116,21.024c-1.255,1.337-2.032,3.683-1.331,5.367a4.587,4.587,0,0,0,4.287,2.841,4.087,4.087,0,0,0,3.082-1.523l20.328-18.9Z"/></g></svg>
+        arXiv Paper
+      </a>
+      <a class="btn btn-github" href="#" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div><span class="scroll-text">Scroll</span></div>
+
+  </div>
+</header>
+
+<div class="tldr-wrap">
+  <div class="tldr-inner">
+    <span class="tldr-badge">TL;DR</span>
+    <p class="tldr-text">MeMo trains a <strong>small, dedicated Memory model</strong> on a synthesized reflection QA dataset distilled from a target corpus. A frozen Executive LLM then queries this Memory model through a structured three-stage protocol. The result: <strong>no retrieval index, no catastrophic forgetting, no access to LLM weights</strong>, and consistently stronger accuracy than RAG on multi-hop and long-document benchmarks.</p>
+  </div>
+</div>
+
+<div class="page">
+
+  <aside class="toc" id="toc">
+    <div class="toc-label">On this page</div>
+    <a href="#overview">The Problem</a>
+    <a href="#method">Method</a>
+    <a href="#data-synthesis" class="sub">Data Synthesis</a>
+    <a href="#inference-protocol" class="sub">Inference Protocol</a>
+    <a href="#continual" class="sub">Continual Integration</a>
+    <a href="#results">Results</a>
+    <a href="#noise-robustness" class="sub">Noise Robustness</a>
+    <a href="#merging-results" class="sub">Model Merging</a>
+    <a href="#takeaway">Key Takeaway</a>
+    <a href="#limitations">Limitations</a>
+    <a href="#citation">Citation</a>
+  </aside>
+
+  <article class="article">
+
+    <section id="overview" class="reveal">
+      <div class="kicker">The Problem</div>
+      <h2>LLMs Are Frozen in Time</h2>
+
+      <p>Large language models are, at their core, static artifacts. Once pretraining ends, the weights freeze, and so does the world they know. For real applications, this is not merely inconvenient but architecturally limiting: a medical assistant blind to new clinical guidelines, a legal tool unaware of recent rulings, an enterprise system that cannot consult documents that postdate its training cutoff.</p>
+
+      <p>Three paradigms have emerged to address this. <strong>Non-parametric methods</strong> (RAG, ICL) retrieve documents at inference time: flexible, but constrained by context windows, brittle to retrieval noise, and unable to synthesize facts scattered across many documents. <strong>Parametric methods</strong> (fine-tuning, continual pretraining) bake new knowledge into weights: powerful, but expensive, prone to catastrophic forgetting, and inapplicable to proprietary models. <strong>Latent memory methods</strong> compress knowledge into soft tokens or KV-cache artifacts: compact, but shackled by representation coupling, since the memory cannot be reused with any model other than the one that produced it.</p>
+
+      <div class="callout">
+        Each paradigm bets on a different place for knowledge to live. MeMo asks a more fundamental question: <strong>what if knowledge lived in a model of its own?</strong>
+      </div>
+
+      <p>MeMo combines all three paradigms' strengths into a single modular framework. It avoids context-window limitations (unlike RAG), prevents catastrophic forgetting (unlike fine-tuning), and decouples knowledge from the reasoning model (unlike latent memory), while requiring zero access to the Executive model's weights, making it compatible with any LLM including closed-source APIs.</p>
+
+      <table class="ptable reveal">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Frozen LLM</th>
+            <th>No Retrieval Index</th>
+            <th>Black-box</th>
+            <th>No Forgetting</th>
+            <th>Const-size Memory</th>
+            <th>Cross-LLM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Non-parametric (RAG, ICL)</td>
+            <td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td>
+          </tr>
+          <tr>
+            <td>Parametric (CPT, SFT)</td>
+            <td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td>
+          </tr>
+          <tr>
+            <td>Latent Memory</td>
+            <td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td>
+          </tr>
+          <tr class="mr">
+            <td><strong>MeMo (Ours)</strong></td>
+            <td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr>
+
+    <section id="method" class="reveal">
+      <div class="kicker">Method</div>
+      <h2>Two Models, One Knowledge Interface</h2>
+
+      <p>MeMo introduces a two-model architecture. The <strong>Memory model</strong>, substantially smaller than the Executive model (14B vs. 32B parameters in the main experiments), is trained on a synthesized reflection QA dataset derived from a target corpus. It internalizes the corpus's knowledge parametrically and answers sub-queries entirely from its weights at inference time, with no access to source documents. The <strong>Executive model</strong> (the large frozen LLM) treats the Memory model as an external oracle, querying it through a structured multi-turn protocol to answer user queries.</p>
+
+      <div class="figure reveal">
+        <img src="memo.png" alt="MeMo two-phase architecture: training pipeline and inference protocol" style="width:100%;display:block">
+        <div class="figure-caption">
+          <strong>Overview of the MeMo training and inference pipeline.</strong> A frozen Generator model synthesizes a reflection QA dataset from the target corpus; the Memory model is SFT-trained on it. At inference, the frozen Executive model queries the Memory model through a structured three-stage protocol to answer complex user queries without ever reading the source documents.
+        </div>
+      </div>
+
+      <h3 id="data-synthesis">Data Synthesis Pipeline</h3>
+      <p>Given a target corpus, the Generator model drives a five-step pipeline to produce a reflection QA dataset Q<sub>final</sub> that captures both single-document facts and cross-document relationships. No document identifiers or watermarks are embedded in the generated QA pairs, preventing the Memory model from exploiting shortcut signals at evaluation time.</p>
+
+      <div class="stage-flow reveal">
+        <div class="stage">
+          <div class="snum s1">1</div>
+          <div>
+            <div class="stitle">Fact Extraction</div>
+            <div class="sdesc">Each document is segmented into chunks. For each chunk the Generator runs two parallel passes: <strong>direct extraction</strong> capturing explicitly stated facts (Q<sub>dir</sub>), and <strong>indirect extraction</strong> targeting inferred or synthesized information beyond the surface text (Q<sub>indir</sub>). This dual signal ensures the Memory model trains on both factual recall and inferential reasoning.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="snum s2">2</div>
+          <div>
+            <div class="stitle">Consolidation</div>
+            <div class="sdesc">QA pairs sharing a common underlying context (entity, time period, or relationship type) are merged into composite multi-fact questions (Q<sub>mrg</sub>). This produces training instances that require integrating multiple facts within the same contextual chunk, going beyond single-fact question answering. The consolidated set is Q<sub>con</sub> = Q<sub>dir</sub> ∪ Q<sub>indir</sub> ∪ Q<sub>mrg</sub>.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="snum s3">3</div>
+          <div>
+            <div class="stitle">Verification and Rewriting</div>
+            <div class="sdesc">Each QA pair in Q<sub>con</sub> is evaluated for self-containment: whether it can be correctly answered in isolation, without access to the source chunk. Common failure modes include unresolved pronouns ("What did they propose?") and implicit references ("As noted above…"). Non-self-contained pairs are rewritten using the original chunk as context; those that remain ambiguous are discarded. This yields the verified set Q<sub>ver</sub>.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="snum s4">4</div>
+          <div>
+            <div class="stitle">Entity Surfacing</div>
+            <div class="sdesc">For every named entity in Q<sub>ver</sub>, the Generator creates reverse-lookup QA pairs (Q<sub>ent</sub>): the question encodes the entity's attributes and relationships, and the answer reveals its identity. Facts are aggregated across all QA pairs within the chunk first, and questions span varying complexity levels from single-fact to multi-fact. This directly combats the <em>reversal curse</em>, training the Memory model to infer entities from indirect or partially specified descriptions, a capability exploited during Stage 2 of inference.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="snum s5">5</div>
+          <div>
+            <div class="stitle">Cross-Document Synthesis</div>
+            <div class="sdesc">The final step operates over groups of topically related document chunks. The Generator identifies two types of cross-document connections: <strong>converging clues</strong> (multiple documents each contribute complementary facts that together identify the same entity) and <strong>parallel properties</strong> (different entities across documents share a common attribute or role, enabling comparative and analogical reasoning). The final dataset is Q<sub>final</sub> = Q<sub>ver</sub> ∪ Q<sub>ent</sub> ∪ Q<sub>cross</sub>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-v">
+        The data synthesis pipeline produces three complementary training signals: <strong>self-contained factual QA</strong>, <strong>entity-centric reverse lookups</strong>, and <strong>cross-document synthesis</strong>, giving the Memory model a 360° view of the corpus's knowledge structure.
+      </div>
+
+      <h3>Why Reflections, Not Raw Documents?</h3>
+      <p>The core insight behind MeMo's data pipeline is the concept of <em>reflections</em>: synthesized QA pairs that act as compositional windows into the corpus. Unlike training on raw text or simple paraphrase pairs, reflections are engineered to capture exactly what makes cross-document reasoning hard: they consolidate facts from multiple chunks, enforce self-containment (no dangling pronouns, no implicit context), and encode entity relationships explicitly in both forward and reverse directions.</p>
+
+
+      <h3 id="inference-protocol">Three Stages, One Answer</h3>
+      <p>Naive single-turn querying of the Memory model fails on compositional questions requiring chained reasoning. MeMo's protocol mirrors how a skilled analyst would interrogate an unfamiliar knowledge base, proceeding in three stages:</p>
+
+      <div class="stage-flow reveal">
+        <div class="stage">
+          <div class="snum s1">1</div>
+          <div>
+            <div class="stitle">Grounding: Cast Wide</div>
+            <div class="sdesc">The Executive decomposes the user query into K atomic sub-questions, each targeting a single identifying constraint. Each is answered by Memory independently (with no shared context between sub-questions), providing broad, unbiased grounding. K is adaptively determined per query by the Executive.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="snum s2">2</div>
+          <div>
+            <div class="stitle">Entity Identification: Converge</div>
+            <div class="sdesc">Using the grounding responses as context, the Executive iteratively issues targeted follow-up questions to Memory, progressively narrowing the candidate entity pool. This stage exploits the entity-surfacing training; Memory has learned to resolve partial descriptions to concrete entities. Terminates when a single entity is identified or the budget is exhausted.</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="snum s3">3</div>
+          <div>
+            <div class="stitle">Answer Seeking: Verify and Synthesize</div>
+            <div class="sdesc">Conditioned on the identified entity, the Executive queries Memory for precise supporting facts. Once sufficient evidence is gathered, it synthesizes a final answer from the accumulated responses. Memory responses are compact natural-language snippets whose length is independent of corpus size, enabling constant-time retrieval regardless of knowledge base scale.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 id="continual">Continual Integration via Model Merging</h3>
+      <p>When a new corpus arrives, full parametric retraining must process the union of all previous sources, a cost that grows quadratically with the number of corpora. MeMo instead trains a separate Memory model on the new corpus and applies <em>model merging</em> to combine it with existing Memory models. Each Memory model contributes a task vector capturing its parametric shift from the shared pretrained base; these vectors are merged via TIES with a configurable sparsification density.</p>
+
+      <p>For K=2 corpus subsets of ~640k QA pairs each, merging accumulates only X+Y ≈ <span class="hi">48 GPU-hours</span> versus X+(X+Y) ≈ <span class="hi">72 GPU-hours</span> for full retraining, a 33% reduction. At K=10, the saving grows to <span class="hi">5.5×</span> (240 vs. 1,320 GPU-hours), as merging costs scale linearly while full retraining costs scale quadratically.</p>
+    </section>
+
+    <hr>
+
+    <section id="results" class="reveal">
+      <div class="kicker">Results</div>
+      <h2>Beating RAG Where It Matters Most</h2>
+
+      <p>MeMo was evaluated on three knowledge-intensive benchmarks spanning different reasoning challenges: <strong>BrowseComp-Plus</strong> (multi-hop retrieval across 300 questions with 3,541 total corpus documents), <strong>NarrativeQA</strong> (long-document comprehension across books and movie scripts), and <strong>MuSiQue</strong> (multi-step reasoning across 2–4 Wikipedia paragraphs, 1,000 questions). Results are reported under two Executive models (Qwen2.5-32B-Instruct and Gemini-3.0-Flash) against three retrieval baselines (BM25, NV-Embed-V2, HippoRAG2) and one latent-memory baseline (Cartridges).</p>
+
+      <div class="stats reveal">
+        <div class="stat" style="background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(34,211,238,.07));border-color:rgba(34,211,238,.35)">
+          <div class="stat-num ca" data-target="53">0</div>
+          <div class="stat-desc">NarrativeQA accuracy % (Gemini-3.0-Flash), more than 2× the best RAG baseline</div>
+        </div>
+        <div class="stat" style="background:linear-gradient(135deg,rgba(52,211,153,.18),rgba(52,211,153,.07));border-color:rgba(52,211,153,.35)">
+          <div class="stat-num cg" data-target="60">0</div>
+          <div class="stat-desc">MuSiQue accuracy % (Gemini-3.0-Flash), the best among all methods tested</div>
+        </div>
+        <div class="stat" style="background:linear-gradient(135deg,rgba(167,139,250,.18),rgba(167,139,250,.07));border-color:rgba(167,139,250,.35)">
+          <div class="stat-num cb" data-target="33">0</div>
+          <div class="stat-desc">Compute reduction via model merging vs. full retraining at K=2</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+      <table class="rtable reveal">
+        <thead>
+          <tr>
+            <th rowspan="2" style="vertical-align:bottom">Method</th>
+            <th colspan="2" class="ctr">BrowseComp-Plus (%)</th>
+            <th colspan="2" class="ctr">NarrativeQA (%)</th>
+            <th colspan="2" class="ctr">MuSiQue (%)</th>
+          </tr>
+          <tr>
+            <th class="ctr">Q2.5-32B</th><th class="ctr">Gemini-3F</th>
+            <th class="ctr">Q2.5-32B</th><th class="ctr">Gemini-3F</th>
+            <th class="ctr">Q2.5-32B</th><th class="ctr">Gemini-3F</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Perfect Retrieval*</td>
+            <td class="ctr">79.67</td><td class="ctr">88.33</td>
+            <td class="ctr">51.42</td><td class="ctr">60.41</td>
+            <td class="ctr">62.83</td><td class="ctr">73.00</td>
+          </tr>
+          <tr>
+            <td>BM25</td>
+            <td class="ctr">1.11</td><td class="ctr">27.00</td>
+            <td class="ctr">10.24</td><td class="ctr">14.33</td>
+            <td class="ctr">20.00</td><td class="ctr">23.20</td>
+          </tr>
+          <tr>
+            <td>NV-Embed-V2</td>
+            <td class="ctr">50.67</td><td class="ctr">57.00</td>
+            <td class="ctr">20.59</td><td class="ctr">26.62</td>
+            <td class="ctr">37.47</td><td class="ctr">46.60</td>
+          </tr>
+          <tr>
+            <td>HippoRAG2</td>
+            <td class="ctr mid">56.11</td><td class="ctr">66.33</td>
+            <td class="ctr">21.39</td><td class="ctr">23.21</td>
+            <td class="ctr">42.17</td><td class="ctr">57.00</td>
+          </tr>
+          <tr>
+            <td>Cartridges</td>
+            <td class="ctr">0.00</td><td class="ctr">—</td>
+            <td class="ctr">3.75</td><td class="ctr">—</td>
+            <td class="ctr">8.57</td><td class="ctr">—</td>
+          </tr>
+          <tr class="mr">
+            <td><strong>MeMo (Ours)</strong></td>
+            <td class="ctr">54.22</td><td class="ctr best">66.67</td>
+            <td class="ctr best">26.85</td><td class="ctr best">53.58</td>
+            <td class="ctr best">48.30</td><td class="ctr best">60.20</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="fn">*Perfect Retrieval is an empirical upper bound. Bold = best among real methods. MeMo Memory model = Qwen2.5-14B-Instruct.</p>
+
+      <p>The pattern is unambiguous. On NarrativeQA and MuSiQue, where reasoning requires synthesizing facts distributed across many documents, MeMo dominates all retrieval baselines by large margins. On NarrativeQA, the strongest RAG baseline (HippoRAG2) achieves 23.21% under Gemini-3.0-Flash; MeMo reaches 53.58%, more than double. This is exactly where retrieval systems structurally fail: they can find relevant passages but cannot synthesize coherent answers from content distributed across a full book.</p>
+
+      <p>On BrowseComp-Plus, MeMo leads under Gemini-3.0-Flash (66.67%) while narrowly trailing HippoRAG2 under Qwen2.5-32B-Instruct (54.22% vs. 56.11%). This gap is informative: BrowseComp-Plus answers are absent from Executive model pretraining, making direct document access inherently valuable; parametric encoding is at a mild structural disadvantage when answers require verbatim retrieval.</p>
+
+      <p>The plug-and-play advantage is quantifiable: upgrading the Executive from Qwen2.5-32B-Instruct to Gemini-3.0-Flash yields gains of <span class="hi">+12.45 pp</span> on BrowseComp-Plus, <span class="hi">+26.73 pp</span> on NarrativeQA, and <span class="hi">+11.90 pp</span> on MuSiQue, with zero retraining of the Memory model. As frontier Executive models improve over time, MeMo's accuracy improves automatically.</p>
+
+      <h3 id="noise-robustness">Near-Immunity to Retrieval Noise</h3>
+      <p>When negative distractor documents are added to the corpus (N=1,775 for BrowseComp-Plus, N=2,648 for MuSiQue), retrieval-based systems suffer significant accuracy degradation as they struggle to distinguish relevant from irrelevant content. MeMo remains essentially unaffected:</p>
+
+      <div class="noise-grid reveal">
+        <div class="noise-card" style="background:var(--bg2)">
+          <div class="nc-title">NV-Embed-V2</div>
+          <div class="nc-row"><span class="nc-name">BrowseComp-Plus</span><span class="dbad">−6.22%</span></div>
+          <div class="nc-row"><span class="nc-name">MuSiQue</span><span class="dbad">−4.83%</span></div>
+        </div>
+        <div class="noise-card" style="background:var(--bg2)">
+          <div class="nc-title">HippoRAG2</div>
+          <div class="nc-row"><span class="nc-name">BrowseComp-Plus</span><span class="dbad">−6.22%</span></div>
+          <div class="nc-row"><span class="nc-name">MuSiQue</span><span class="dbad">−5.16%</span></div>
+        </div>
+        <div class="noise-card" style="background:var(--a-dim);border-color:rgba(34,211,238,.22)">
+          <div class="nc-title" style="color:var(--a)">MeMo (Ours)</div>
+          <div class="nc-row"><span class="nc-name">BrowseComp-Plus</span><span class="dgood">+0.55%</span></div>
+          <div class="nc-row"><span class="nc-name">MuSiQue</span><span class="dbad">−1.77%</span></div>
+        </div>
+      </div>
+
+      <p>The robustness is structural: the Memory model responds entirely from internalized parametric knowledge at inference time. Noise documents in the retrieval pool have no effect on its weights. The −1.77% drop on MuSiQue falls within standard deviation bounds, in stark contrast to the 4–6% degradations seen in retrieval systems.</p>
+
+      <h3 id="merging-results">Model Merging: The Compute–Accuracy Trade-off</h3>
+      <p>TIES-merging at ρ=0.3 achieves 15.81% versus full retraining's 26.85% on NarrativeQA under Qwen2.5-32B-Instruct, an 11.04 pp accuracy gap. This is a real cost. However, even the merged model outperforms every retrieval baseline on NarrativeQA, and at K=10 the 5.5× compute saving becomes increasingly compelling for knowledge bases spanning many independent sources updated incrementally over time.</p>
+    </section>
+
+    <hr>
+
+    <section id="takeaway" class="reveal">
+      <div class="kicker">Key Insight</div>
+      <h2>One Thing to Remember</h2>
+
+      <div class="takeaway reveal">
+        <div class="takeaway-icon">🧠</div>
+        <div class="takeaway-text">
+          RAG retrieves documents and hopes the LLM can synthesize them.
+          MeMo <strong>encodes the corpus directly into a model</strong>, letting any frozen LLM query that model as a knowledge oracle.
+          The result is a system immune to retrieval noise, free from context limits,
+          and composable with <strong>any LLM you already have.</strong>
+        </div>
+      </div>
+
+      <p>For ML practitioners deploying knowledge-intensive systems: if your use case involves long documents, multi-hop reasoning, or knowledge bases too large to fit in a context window, MeMo offers a qualitatively different architecture. Its three-stage protocol adds per-query overhead compared to single-turn RAG, but the accuracy gains on NarrativeQA (more than 2× over the best RAG baseline) suggest the trade-off is frequently worthwhile.</p>
+
+      <p>The plug-and-play compatibility is the sleeper advantage. Train the Memory model once with a weaker open-source Generator, then deploy it alongside GPT-4, Gemini, Claude, or any other frontier model as the Executive. As Executive models improve, accuracy improves, with no retraining required. MeMo inverts the usual dependency: the knowledge store and the reasoning engine are finally independent.</p>
+    </section>
+
+    <hr>
+
+    <section id="limitations" class="reveal">
+      <div class="kicker">Limitations &amp; Future Work</div>
+      <h2>Where MeMo Falls Short</h2>
+
+      <p>The paper is candid about four structural constraints of the current design:</p>
+
+      <div class="lim-grid reveal">
+        <div class="lim-card">
+          <div class="lim-title"><div class="lim-dot"></div>Training Cost</div>
+          <p>The five-step data synthesis pipeline and subsequent SFT require substantial one-time compute (~72 GPU-hours for the NarrativeQA experiments). Corpora that change frequently will accumulate costs proportional to update frequency.</p>
+        </div>
+        <div class="lim-card">
+          <div class="lim-title"><div class="lim-dot lim-dot-b"></div>Memory Capacity Ceiling</div>
+          <p>The Memory model has finite representational capacity. Very large or information-dense corpora may exceed what a fixed-size Memory model can faithfully encode; scaling behavior with corpus size is not yet fully characterized.</p>
+        </div>
+        <div class="lim-card">
+          <div class="lim-title"><div class="lim-dot lim-dot-c"></div>Merging Accuracy Gap</div>
+          <p>TIES-merging trails full retraining by 11–19 pp on NarrativeQA. For high-stakes deployments, this accuracy cost may outweigh the compute savings, depending on the number of corpora K and accuracy requirements.</p>
+        </div>
+        <div class="lim-card">
+          <div class="lim-title"><div class="lim-dot lim-dot-d"></div>Evaluation Scope</div>
+          <p>Evaluation covers three English QA benchmarks. Performance on structured knowledge (tables, code, formal logic) or multilingual corpora is not assessed. The multi-turn protocol also introduces per-query latency overhead not present in single-pass RAG systems.</p>
+        </div>
+      </div>
+
+      <p>Future directions the authors identify: more efficient memory construction, extensions to dynamically evolving corpora, tighter coordination loops between the Executive and Memory models, and weight-sharing techniques that could eliminate the dedicated Memory model GPU footprint for very large knowledge bases.</p>
+    </section>
+
+    <hr>
+
+    <section id="citation" class="reveal">
+      <div class="kicker">Citation</div>
+      <h2>Cite this Work</h2>
+
+      <div class="codeblock">
+        <div class="cb-head">
+          <span class="cb-lang">BibTeX</span>
+          <button class="cb-copy" onclick="copyBib(this)">Copy</button>
+        </div>
+        <pre><span class="bt-type">@article</span><span class="bt-brace">{</span><span class="bt-key">quek2025memo</span><span class="bt-brace">,</span>
+  <span class="bt-field">title</span>   <span class="bt-brace">= {</span><span class="bt-val">MeMo: Memory as a Model</span><span class="bt-brace">},</span>
+  <span class="bt-field">author</span>  <span class="bt-brace">= {</span><span class="bt-val">Quek, Ryan Wei Heng and Lee, Sanghyuk and
+           Leong, Alfred Wei Lun and Verma, Arun and
+           Prakash, Alok and Chen, Nancy F. and
+           Low, Bryan Kian Hsiang and Rus, Daniela and 
+           Solar-Lezama, Armando</span><span class="bt-brace">},</span>
+  <span class="bt-field">journal</span> <span class="bt-brace">= {</span><span class="bt-val">arXiv preprint arXiv:2605.15156</span><span class="bt-brace">},</span>
+  <span class="bt-field">year</span>    <span class="bt-brace">= {</span><span class="bt-val">2026</span><span class="bt-brace">}
+}</span></pre>
+      </div>
+    </section>
+
+  </article>
+</div>
+
+<footer>
+  <div class="footer-logo"><img src="logo.png" alt="MeMo"><em>MeMo</em>: Memory as a Model</div>
+  <div class="footer-links">
+    <a class="btn btn-arxiv" href="http://arxiv.org/abs/2605.15156" target="_blank">
+      <svg width="11" height="15" viewBox="0 0 74.492 100.25" fill="currentColor"><g transform="translate(-526.086 -245.559)"><path d="M586.72,255.616a3.377,3.377,0,0,1,.448.031,5.917,5.917,0,0,1,3.581,2.79c.454,1.116.314,2.023-1.315,4.141L563.168,293.6l-8.558-10.047,29.348-26.616a4.406,4.406,0,0,1,2.762-1.321m0-1.5a5.766,5.766,0,0,0-3.69,1.643l-.041.032-.038.035L553.6,282.442l-1.077.977.943,1.107,8.558,10.047,1.145,1.344,1.141-1.348,26.267-31.022.022-.027.022-.028c1.574-2.046,2.327-3.622,1.516-5.619a7.309,7.309,0,0,0-4.779-3.714,5.083,5.083,0,0,0-.64-.043Z"/><path d="M553.423,284.593l8.977,10.558L597.911,337.9c.873,1.093,1.419,2.186,1.047,3.418a4.092,4.092,0,0,1-2.721,2.837,3.557,3.557,0,0,1-1.045.159,4,4,0,0,1-2.687-1.124L548.01,300.808c-3.5-3.5-2.971-8.151.436-11.558l4.977-4.657m.124-2.17L552.4,283.5l-4.976,4.656c-4.192,4.191-4.372,9.816-.473,13.714l44.521,42.4a5.485,5.485,0,0,0,3.722,1.538,5.1,5.1,0,0,0,1.483-.224,5.59,5.59,0,0,0,3.719-3.838,5.176,5.176,0,0,0-1.31-4.788l-35.53-42.767-8.988-10.571-1.019-1.2Z"/><path d="M562.4,295.151l9.556,11.5,5.761-5.356a7.926,7.926,0,0,0,.041-11.743l-43.7-41.923s-1.671-2.029-3.437-2.071a4.49,4.49,0,0,0-4.23,2.718c-.688,1.651-.194,2.809,1.315,4.97l29.306,35.565Z"/><path d="M553.7,306.223l-17.116,21.024c-1.255,1.337-2.032,3.683-1.331,5.367a4.587,4.587,0,0,0,4.287,2.841,4.087,4.087,0,0,0,3.082-1.523l20.328-18.9Z"/></g></svg>
+      arXiv Paper
+    </a>
+    <a class="btn btn-github" href="#" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a class="btn btn-ghost" href="#overview">↑ Back to top</a>
+  </div>
+  <div class="footer-credit">
+    &copy; 2026 MeMo Team &nbsp;·&nbsp; Blog last updated: 16 May 2026.
+  </div>
+</footer>
+
+<script>
+/* Reveal on scroll */
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target) } })
+}, { threshold: 0.06, rootMargin: '0px 0px -48px 0px' })
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el))
+
+/* TOC */
+const toc = document.getElementById('toc')
+setTimeout(() => toc && toc.classList.add('ready'), 400)
+const tocLinks = document.querySelectorAll('.toc a')
+const tocObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'))
+      const a = document.querySelector(`.toc a[href="#${e.target.id}"]`)
+      if (a) a.classList.add('active')
+    }
+  })
+}, { rootMargin: '-15% 0px -70% 0px' })
+document.querySelectorAll('section[id], h3[id]').forEach(s => tocObs.observe(s))
+
+/* Count-up */
+const co = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return
+    const el = e.target, target = +el.dataset.target
+    let start = null
+    const run = ts => {
+      if (!start) start = ts
+      const p = Math.min((ts - start) / 1400, 1)
+      el.textContent = Math.round((1 - Math.pow(1 - p, 3)) * target) + '%'
+      if (p < 1) requestAnimationFrame(run)
+    }
+    requestAnimationFrame(run)
+    co.unobserve(el)
+  })
+}, { threshold: 0.5 })
+document.querySelectorAll('[data-target]').forEach(el => { el.textContent = '0%'; co.observe(el) })
+
+/* Copy BibTeX */
+function copyBib(btn) {
+  navigator.clipboard.writeText(btn.closest('.codeblock').querySelector('pre').innerText).then(() => {
+    btn.textContent = 'Copied!'
+    setTimeout(() => btn.textContent = 'Copy', 2200)
+  })
+}
+
+/* Above-fold reveal */
+window.addEventListener('load', () => {
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('on')
+  })
+})
+
+/* Reading progress */
+const rp = document.getElementById('rp')
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - window.innerHeight
+  rp.style.width = (total > 0 ? Math.min(window.scrollY / total * 100, 100) : 0) + '%'
+}, { passive: true })
+
+/* Theme toggle */
+function toggleTheme() {
+  const html = document.documentElement
+  const isDark = html.getAttribute('data-theme') !== 'light'
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark')
+  localStorage.setItem('theme', isDark ? 'light' : 'dark')
+}
+;(function() {
+  const saved = localStorage.getItem('theme')
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark')
+})()
+</script>
+</body>
+</html>
