@@ -237,6 +237,9 @@ img { max-width:100%; display:block }
 .rtable .mr td:first-child, .ptable .mr td:first-child { font-weight:700; color:var(--a) }
 .rtable tr:hover td { background:var(--bg2) }
 .rtable .mr:hover td, .ptable .mr:hover td { background:rgba(34,211,238,.18) }
+.rtable .pr td { background:rgba(251,191,36,.08); color:var(--t2) }
+.rtable .pr td:first-child { color:#f59e0b }
+.rtable .pr:hover td { background:rgba(251,191,36,.14) }
 .best { color:var(--a); font-weight:700 }
 .mid  { color:var(--b); font-weight:600 }
 .fn { font-size:12px; color:var(--t5); margin-top:-10px; margin-bottom:28px }
@@ -386,10 +389,10 @@ body { font-feature-settings: "kern" 1 }
     </div> -->
     <div class="hero-title">
       <img src="logo.png" alt="MeMo logo" class="hero-logo">
-      <h1><em>MeMo</em>: Memory as a Model</h1>
+      <h1><em>MeMo:</em> Memory as a Model</h1>
     </div>
 
-    <p class="hero-tagline">What if you could teach an LLM new knowledge without touching its weights? MeMo encodes a target corpus into a dedicated Memory model, then lets any frozen LLM query it at inference time: no retrieval index, no forgetting, no parameter access required.</p>
+    <p class="hero-tagline">What if you could teach a large language model (LLM) new knowledge without touching its weights? MeMo encodes a target corpus into a dedicated Memory model, then lets any frozen LLM query it at inference time: no retrieval index, no catastrophic forgetting, no parameter access required.</p>
 
     <div class="hero-authors">
       <div>
@@ -410,10 +413,10 @@ body { font-feature-settings: "kern" 1 }
         <sup>2</sup>Integrative Sciences and Engineering Programme, NUSGS, Singapore<br>
         <sup>3</sup>Agency for Science, Technology, Research (A*STAR), Singapore<br>
         <sup>4</sup>Department of Computer Science, National University of Singapore, Singapore<br>
-        <sup>5</sup>University of Tokyo, Japan &nbsp;·&nbsp; <sup>6</sup>Liquid AI, USA<br>
-        <sup>7</sup>CSAIL, Massachusetts Institute of Technology, USA &nbsp;·&nbsp; <sup>8</sup>AI Singapore<br>
+        <sup>5</sup>University of Tokyo, Japan &nbsp;&nbsp; &nbsp; <sup>6</sup>Liquid AI, USA<br>
+        <sup>7</sup>CSAIL, Massachusetts Institute of Technology, USA &nbsp;&nbsp;&nbsp; <sup>8</sup>AI Singapore<br>
         <sup>9</sup>Singapore-MIT Alliance for Research and Technology Centre, Singapore<br>
-        <span style="color:var(--t5)">(*Equal contribution &nbsp;<sup>†</sup>Corresponding author)</span>
+        <span style="color:var(--t5)">(*Equal contribution &nbsp;&nbsp;&nbsp;<sup>†</sup>Corresponding author)</span>
       </div>
     </div>
 
@@ -427,15 +430,14 @@ body { font-feature-settings: "kern" 1 }
         GitHub
       </a>
     </div>
-    <div class="hero-scroll"><div class="scroll-line"></div><span class="scroll-text">Scroll</span></div>
 
   </div>
 </header>
 
 <div class="tldr-wrap">
   <div class="tldr-inner">
-    <span class="tldr-badge">TL;DR</span>
-    <p class="tldr-text">MeMo trains a <strong>small, dedicated Memory model</strong> on a synthesized reflection QA dataset distilled from a target corpus. A frozen Executive LLM then queries this Memory model through a structured three-stage protocol. The result: <strong>no retrieval index, no catastrophic forgetting, no access to LLM weights</strong>, and consistently stronger accuracy than RAG on multi-hop and long-document benchmarks.</p>
+    <span class="tldr-badge" title="Too Long; Didn't Read">TL;DR</span>
+    <p class="tldr-text">MeMo trains a <strong>small, dedicated Memory model</strong> on a synthesized reflection question-answer (QA) dataset distilled from a target corpus. A frozen Executive LLM then queries this Memory model through a structured three-stage protocol. The result: <strong>no retrieval index, no catastrophic forgetting, no access to LLM weights</strong>, and consistently stronger accuracy than Retrieval-Augmented Generation (RAG) on multi-hop and long-document benchmarks.</p>
   </div>
 </div>
 
@@ -464,13 +466,13 @@ body { font-feature-settings: "kern" 1 }
 
       <p>Large language models are, at their core, static artifacts. Once pretraining ends, the weights freeze, and so does the world they know. For real applications, this is not merely inconvenient but architecturally limiting: a medical assistant blind to new clinical guidelines, a legal tool unaware of recent rulings, an enterprise system that cannot consult documents that postdate its training cutoff.</p>
 
-      <p>Three paradigms have emerged to address this. <strong>Non-parametric methods</strong> (RAG, ICL) retrieve documents at inference time: flexible, but constrained by context windows, brittle to retrieval noise, and unable to synthesize facts scattered across many documents. <strong>Parametric methods</strong> (fine-tuning, continual pretraining) bake new knowledge into weights: powerful, but expensive, prone to catastrophic forgetting, and inapplicable to proprietary models. <strong>Latent memory methods</strong> compress knowledge into soft tokens or KV-cache artifacts: compact, but shackled by representation coupling, since the memory cannot be reused with any model other than the one that produced it.</p>
+      <p>Three paradigms have emerged to address this. <strong>Non-parametric methods</strong> (RAG, In-Context Learning (ICL)) retrieve documents at inference time: flexible, but constrained by context windows, brittle to retrieval noise, and unable to synthesize facts scattered across many documents. <strong>Parametric methods</strong> (fine-tuning, continual pretraining) bake new knowledge into weights: powerful, but expensive, prone to catastrophic forgetting, and limiting generalization to unseen queries. <strong>Latent memory methods</strong> compress knowledge into soft tokens or Key-Value cache (KV-cache) artifacts: compact, but shackled by representation coupling, since the memory cannot be reused with any model other than the one that produced it.</p>
 
       <div class="callout">
         Each paradigm bets on a different place for knowledge to live. MeMo asks a more fundamental question: <strong>what if knowledge lived in a model of its own?</strong>
       </div>
 
-      <p>MeMo combines all three paradigms' strengths into a single modular framework. It avoids context-window limitations (unlike RAG), prevents catastrophic forgetting (unlike fine-tuning), and decouples knowledge from the reasoning model (unlike latent memory), while requiring zero access to the Executive model's weights, making it compatible with any LLM including closed-source APIs.</p>
+      <p>MeMo combines all three paradigms' strengths into a single modular framework. It avoids context-window limitations (unlike RAG), prevents catastrophic forgetting (unlike fine-tuning), and decouples knowledge from the reasoning model (unlike latent memory), while requiring zero access to the Executive model's weights, making it compatible with any LLM including closed-source application programming interfaces (APIs).</p>
 
       <table class="ptable reveal">
         <thead>
@@ -490,7 +492,7 @@ body { font-feature-settings: "kern" 1 }
             <td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td>
           </tr>
           <tr>
-            <td>Parametric (CPT, SFT)</td>
+            <td>Parametric (Continual Pre-Training (CPT), Supervised Fine-Tuning (SFT))</td>
             <td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td>
           </tr>
           <tr>
@@ -511,7 +513,7 @@ body { font-feature-settings: "kern" 1 }
       <div class="kicker">Method</div>
       <h2>Two Models, One Knowledge Interface</h2>
 
-      <p>MeMo introduces a two-model architecture. The <strong>Memory model</strong>, substantially smaller than the Executive model (14B vs. 32B parameters in the main experiments), is trained on a synthesized reflection QA dataset derived from a target corpus. It internalizes the corpus's knowledge parametrically and answers sub-queries entirely from its weights at inference time, with no access to source documents. The <strong>Executive model</strong> (the large frozen LLM) treats the Memory model as an external oracle, querying it through a structured multi-turn protocol to answer user queries.</p>
+      <p>MeMo introduces a two-model architecture. The <strong>Memory model</strong>, substantially smaller than the Executive model, is trained on a synthesized reflection QA dataset derived from a target corpus. It internalizes the corpus's knowledge parametrically and answers sub-queries entirely from its weights at inference time, with no access to source documents. The <strong>Executive model</strong> (the large frozen LLM) treats the Memory model as an external oracle, querying it through a structured multi-turn protocol to answer user queries.</p>
 
       <div class="figure reveal">
         <img src="memo.png" alt="MeMo two-phase architecture: training pipeline and inference protocol" style="width:100%;display:block">
@@ -597,9 +599,9 @@ body { font-feature-settings: "kern" 1 }
       </div>
 
       <h3 id="continual">Continual Integration via Model Merging</h3>
-      <p>When a new corpus arrives, full parametric retraining must process the union of all previous sources, a cost that grows quadratically with the number of corpora. MeMo instead trains a separate Memory model on the new corpus and applies <em>model merging</em> to combine it with existing Memory models. Each Memory model contributes a task vector capturing its parametric shift from the shared pretrained base; these vectors are merged via TIES with a configurable sparsification density.</p>
+      <p>When a new corpus arrives, full parametric retraining must process the union of all previous sources, a cost that grows quadratically with the number of corpora. MeMo instead trains a separate Memory model on the new corpus and applies <em>model merging</em> to combine it with existing Memory models. Each Memory model contributes a task vector capturing its parametric shift from the shared pretrained base; these vectors are merged via Trim, Elect Sign &amp; Merge (TIES) with a configurable sparsification density.</p>
 
-      <p>For K=2 corpus subsets of ~640k QA pairs each, merging accumulates only X+Y ≈ <span class="hi">48 GPU-hours</span> versus X+(X+Y) ≈ <span class="hi">72 GPU-hours</span> for full retraining, a 33% reduction. At K=10, the saving grows to <span class="hi">5.5×</span> (240 vs. 1,320 GPU-hours), as merging costs scale linearly while full retraining costs scale quadratically.</p>
+      <p>For K=2 corpus subsets of ~640k QA pairs each, merging accumulates only X+Y ≈ <span class="hi">48 8&times;H100 GPU-hours</span> versus X+(X+Y) ≈ <span class="hi">72 8&times;H100 GPU-hours</span> for full retraining, a 33% reduction. At K=10, the saving grows to <span class="hi">5.5×</span> (240 vs. 1,320 8&times;H100 GPU-hours), as merging costs scale linearly while full retraining costs scale quadratically.</p>
     </section>
 
     <hr>
@@ -612,7 +614,7 @@ body { font-feature-settings: "kern" 1 }
 
       <div class="stats reveal">
         <div class="stat" style="background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(34,211,238,.07));border-color:rgba(34,211,238,.35)">
-          <div class="stat-num ca" data-target="53">0</div>
+          <div class="stat-num ca" data-target="54">0</div>
           <div class="stat-desc">NarrativeQA accuracy % (Gemini-3.0-Flash), more than 2× the best RAG baseline</div>
         </div>
         <div class="stat" style="background:linear-gradient(135deg,rgba(52,211,153,.18),rgba(52,211,153,.07));border-color:rgba(52,211,153,.35)">
@@ -641,7 +643,7 @@ body { font-feature-settings: "kern" 1 }
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr class="pr">
             <td>Perfect Retrieval*</td>
             <td class="ctr">79.67</td><td class="ctr">88.33</td>
             <td class="ctr">51.42</td><td class="ctr">60.41</td>
@@ -686,10 +688,10 @@ body { font-feature-settings: "kern" 1 }
 
       <p>On BrowseComp-Plus, MeMo leads under Gemini-3.0-Flash (66.67%) while narrowly trailing HippoRAG2 under Qwen2.5-32B-Instruct (54.22% vs. 56.11%). This gap is informative: BrowseComp-Plus answers are absent from Executive model pretraining, making direct document access inherently valuable; parametric encoding is at a mild structural disadvantage when answers require verbatim retrieval.</p>
 
-      <p>The plug-and-play advantage is quantifiable: upgrading the Executive from Qwen2.5-32B-Instruct to Gemini-3.0-Flash yields gains of <span class="hi">+12.45 pp</span> on BrowseComp-Plus, <span class="hi">+26.73 pp</span> on NarrativeQA, and <span class="hi">+11.90 pp</span> on MuSiQue, with zero retraining of the Memory model. As frontier Executive models improve over time, MeMo's accuracy improves automatically.</p>
+      <p>The plug-and-play advantage is quantifiable: upgrading the Executive from Qwen2.5-32B-Instruct to Gemini-3.0-Flash yields gains of <span class="hi">+12.45%</span> on BrowseComp-Plus, <span class="hi">+26.73%</span> on NarrativeQA, and <span class="hi">+11.90%</span> on MuSiQue, with zero retraining of the Memory model. As frontier Executive models improve over time, MeMo's accuracy improves automatically.</p>
 
       <h3 id="noise-robustness">Near-Immunity to Retrieval Noise</h3>
-      <p>When negative distractor documents are added to the corpus (N=1,775 for BrowseComp-Plus, N=2,648 for MuSiQue), retrieval-based systems suffer significant accuracy degradation as they struggle to distinguish relevant from irrelevant content. MeMo remains essentially unaffected:</p>
+      <p>When an equal number of negative distractor documents is added to the corpus (1&times;N, where N=1,775 evidence documents for BrowseComp-Plus and N=2,648 for MuSiQue), retrieval-based systems suffer significant accuracy degradation as they struggle to distinguish relevant from irrelevant content. MeMo remains essentially unaffected:</p>
 
       <div class="noise-grid reveal">
         <div class="noise-card" style="background:var(--bg2)">
@@ -712,7 +714,7 @@ body { font-feature-settings: "kern" 1 }
       <p>The robustness is structural: the Memory model responds entirely from internalized parametric knowledge at inference time. Noise documents in the retrieval pool have no effect on its weights. The −1.77% drop on MuSiQue falls within standard deviation bounds, in stark contrast to the 4–6% degradations seen in retrieval systems.</p>
 
       <h3 id="merging-results">Model Merging: The Compute–Accuracy Trade-off</h3>
-      <p>TIES-merging at ρ=0.3 achieves 15.81% versus full retraining's 26.85% on NarrativeQA under Qwen2.5-32B-Instruct, an 11.04 pp accuracy gap. This is a real cost. However, even the merged model outperforms every retrieval baseline on NarrativeQA, and at K=10 the 5.5× compute saving becomes increasingly compelling for knowledge bases spanning many independent sources updated incrementally over time.</p>
+      <p>TIES-merging at ρ=0.3 achieves 15.81% versus full retraining's 26.85% on NarrativeQA under Qwen2.5-32B-Instruct, an 11.04% accuracy gap. This is a real cost. However, even the merged model outperforms every retrieval baseline on NarrativeQA, and at K=10 the 5.5× compute saving becomes increasingly compelling for knowledge bases spanning many independent sources updated incrementally over time.</p>
     </section>
 
     <hr>
@@ -731,7 +733,7 @@ body { font-feature-settings: "kern" 1 }
         </div>
       </div>
 
-      <p>For ML practitioners deploying knowledge-intensive systems: if your use case involves long documents, multi-hop reasoning, or knowledge bases too large to fit in a context window, MeMo offers a qualitatively different architecture. Its three-stage protocol adds per-query overhead compared to single-turn RAG, but the accuracy gains on NarrativeQA (more than 2× over the best RAG baseline) suggest the trade-off is frequently worthwhile.</p>
+      <p>For machine learning (ML) practitioners deploying knowledge-intensive systems: if your use case involves long documents, multi-hop reasoning, or knowledge bases too large to fit in a context window, MeMo offers a qualitatively different architecture. Its three-stage protocol adds per-query overhead compared to single-turn RAG, but the accuracy gains on NarrativeQA (more than 2× over the best RAG baseline) suggest the trade-off is frequently worthwhile.</p>
 
       <p>The plug-and-play compatibility is the sleeper advantage. Train the Memory model once with a weaker open-source Generator, then deploy it alongside GPT-4, Gemini, Claude, or any other frontier model as the Executive. As Executive models improve, accuracy improves, with no retraining required. MeMo inverts the usual dependency: the knowledge store and the reasoning engine are finally independent.</p>
     </section>
@@ -747,7 +749,7 @@ body { font-feature-settings: "kern" 1 }
       <div class="lim-grid reveal">
         <div class="lim-card">
           <div class="lim-title"><div class="lim-dot"></div>Training Cost</div>
-          <p>The five-step data synthesis pipeline and subsequent SFT require substantial one-time compute (~72 GPU-hours for the NarrativeQA experiments). Corpora that change frequently will accumulate costs proportional to update frequency.</p>
+          <p>The five-step data synthesis pipeline and subsequent SFT require substantial one-time compute (~72 8&times;H100 GPU-hours for the NarrativeQA experiments). Corpora that change frequently will accumulate costs proportional to update frequency.</p>
         </div>
         <div class="lim-card">
           <div class="lim-title"><div class="lim-dot lim-dot-b"></div>Memory Capacity Ceiling</div>
@@ -755,7 +757,7 @@ body { font-feature-settings: "kern" 1 }
         </div>
         <div class="lim-card">
           <div class="lim-title"><div class="lim-dot lim-dot-c"></div>Merging Accuracy Gap</div>
-          <p>TIES-merging trails full retraining by 11–19 pp on NarrativeQA. For high-stakes deployments, this accuracy cost may outweigh the compute savings, depending on the number of corpora K and accuracy requirements.</p>
+          <p>TIES-merging trails full retraining by 11%–19% on NarrativeQA. For high-stakes deployments, this accuracy cost may outweigh the compute savings, depending on the number of corpora K and accuracy requirements.</p>
         </div>
         <div class="lim-card">
           <div class="lim-title"><div class="lim-dot lim-dot-d"></div>Evaluation Scope</div>
@@ -777,12 +779,12 @@ body { font-feature-settings: "kern" 1 }
           <span class="cb-lang">BibTeX</span>
           <button class="cb-copy" onclick="copyBib(this)">Copy</button>
         </div>
-        <pre><span class="bt-type">@article</span><span class="bt-brace">{</span><span class="bt-key">quek2025memo</span><span class="bt-brace">,</span>
+        <pre><span class="bt-type">@article</span><span class="bt-brace">{</span><span class="bt-key">quek2026memo</span><span class="bt-brace">,</span>
   <span class="bt-field">title</span>   <span class="bt-brace">= {</span><span class="bt-val">MeMo: Memory as a Model</span><span class="bt-brace">},</span>
   <span class="bt-field">author</span>  <span class="bt-brace">= {</span><span class="bt-val">Quek, Ryan Wei Heng and Lee, Sanghyuk and
            Leong, Alfred Wei Lun and Verma, Arun and
            Prakash, Alok and Chen, Nancy F. and
-           Low, Bryan Kian Hsiang and Rus, Daniela and 
+           Low, Bryan Kian Hsiang and Rus, Daniela and
            Solar-Lezama, Armando</span><span class="bt-brace">},</span>
   <span class="bt-field">journal</span> <span class="bt-brace">= {</span><span class="bt-val">arXiv preprint arXiv:2605.15156</span><span class="bt-brace">},</span>
   <span class="bt-field">year</span>    <span class="bt-brace">= {</span><span class="bt-val">2026</span><span class="bt-brace">}
@@ -794,7 +796,7 @@ body { font-feature-settings: "kern" 1 }
 </div>
 
 <footer>
-  <div class="footer-logo"><img src="logo.png" alt="MeMo"><em>MeMo</em>: Memory as a Model</div>
+  <div class="footer-logo"><img src="logo.png" alt="MeMo"><em>MeMo:</em>Memory as a Model</div>
   <div class="footer-links">
     <a class="btn btn-arxiv" href="http://arxiv.org/abs/2605.15156" target="_blank">
       <svg width="11" height="15" viewBox="0 0 74.492 100.25" fill="currentColor"><g transform="translate(-526.086 -245.559)"><path d="M586.72,255.616a3.377,3.377,0,0,1,.448.031,5.917,5.917,0,0,1,3.581,2.79c.454,1.116.314,2.023-1.315,4.141L563.168,293.6l-8.558-10.047,29.348-26.616a4.406,4.406,0,0,1,2.762-1.321m0-1.5a5.766,5.766,0,0,0-3.69,1.643l-.041.032-.038.035L553.6,282.442l-1.077.977.943,1.107,8.558,10.047,1.145,1.344,1.141-1.348,26.267-31.022.022-.027.022-.028c1.574-2.046,2.327-3.622,1.516-5.619a7.309,7.309,0,0,0-4.779-3.714,5.083,5.083,0,0,0-.64-.043Z"/><path d="M553.423,284.593l8.977,10.558L597.911,337.9c.873,1.093,1.419,2.186,1.047,3.418a4.092,4.092,0,0,1-2.721,2.837,3.557,3.557,0,0,1-1.045.159,4,4,0,0,1-2.687-1.124L548.01,300.808c-3.5-3.5-2.971-8.151.436-11.558l4.977-4.657m.124-2.17L552.4,283.5l-4.976,4.656c-4.192,4.191-4.372,9.816-.473,13.714l44.521,42.4a5.485,5.485,0,0,0,3.722,1.538,5.1,5.1,0,0,0,1.483-.224,5.59,5.59,0,0,0,3.719-3.838,5.176,5.176,0,0,0-1.31-4.788l-35.53-42.767-8.988-10.571-1.019-1.2Z"/><path d="M562.4,295.151l9.556,11.5,5.761-5.356a7.926,7.926,0,0,0,.041-11.743l-43.7-41.923s-1.671-2.029-3.437-2.071a4.49,4.49,0,0,0-4.23,2.718c-.688,1.651-.194,2.809,1.315,4.97l29.306,35.565Z"/><path d="M553.7,306.223l-17.116,21.024c-1.255,1.337-2.032,3.683-1.331,5.367a4.587,4.587,0,0,0,4.287,2.841,4.087,4.087,0,0,0,3.082-1.523l20.328-18.9Z"/></g></svg>
