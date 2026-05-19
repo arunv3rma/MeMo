@@ -1,0 +1,29 @@
+# accelerate_config.yaml
+# For multi-GPU training with DeepSpeed ZeRO Stage 2
+# Usage: accelerate launch --config_file accelerate_config.yaml continued_pretrain_qwen.py ...
+
+compute_environment: LOCAL_MACHINE
+debug: false
+deepspeed_config:
+  deepspeed_multinode_launcher: standard
+  offload_optimizer_device: cpu       # Set to "cpu" if you run OOM
+  offload_param_device: cpu           # Set to "cpu" if you run OOM
+  zero3_init_flag: false
+  zero_stage: 2                        # ZeRO-2: shards optimizer + gradients across GPUs
+  # ZeRO-3 shards model params too — use if 14B doesn't fit in GPU memory:
+  #   zero_stage: 3
+  #   zero3_init_flag: true
+  #   offload_param_device: cpu
+distributed_type: DEEPSPEED
+downcast_bf16: "no"
+machine_rank: 0
+main_training_function: main
+mixed_precision: bf16
+num_machines: 1
+num_processes: 2                    # auto-detects all GPUs; or set e.g. 4
+rdzv_backend: static
+same_network: true
+tpu_env: []
+tpu_use_cluster: false
+tpu_use_sudo: false
+use_cpu: false
