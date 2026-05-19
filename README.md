@@ -1,4 +1,7 @@
-# MeMo: Memory as a Model
+<h1>
+  <img src="blog/logo.png" alt="MeMo Logo" width="40" style="vertical-align: middle;"/> 
+  MeMo: Memory as a Model
+</h1>
 
 [![arXiv](https://img.shields.io/badge/arXiv-2605.15156-b31b1b.svg)](https://arxiv.org/abs/2605.15156)
 [![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-Collection-yellow)](https://huggingface.co/collections/Glow-AI/memo-memory-as-a-model)
