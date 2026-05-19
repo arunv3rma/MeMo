@@ -74,7 +74,7 @@ Outputs per model: `bcp_results_no_context.json`, `bcp_metrics_no_context.json`.
 ```
 # OpenRouter
 python main_for_bcp_no_context.py \
-    --model "anthropic/claude-3.5-sonnet" \
+    --model "google/gemini-2.5-flash-lite" \
     --questions_file /path/to/browsecomp_plus_questions.jsonl \
     --max_concurrent 30
 
