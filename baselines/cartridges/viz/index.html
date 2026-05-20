@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/floppy-disk.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cartridges dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            typography: {
+              DEFAULT: {
+                css: {
+                  'pre': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    borderRadius: '0.375rem',
+                    padding: '0.75rem',
+                    fontSize: '0.875rem',
+                    fontFamily: 'ui-monospace, SFMono-Regular, monospace',
+                  },
+                  'code': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    borderRadius: '0.25rem',
+                    padding: '0.125rem 0.25rem',
+                    fontSize: '0.875rem',
+                    fontFamily: 'ui-monospace, SFMono-Regular, monospace',
+                  },
+                  'blockquote': {
+                    borderLeftColor: 'rgb(209, 213, 219)',
+                    borderLeftWidth: '4px',
+                    paddingLeft: '1rem',
+                    fontStyle: 'italic',
+                  },
+                  'h1, h2, h3, h4, h5, h6': {
+                    marginTop: '1rem',
+                    marginBottom: '0.5rem',
+                  },
+                  'p': {
+                    marginTop: '0.5rem',
+                    marginBottom: '0.5rem',
+                  },
+                  'ul, ol': {
+                    marginTop: '0.5rem',
+                    marginBottom: '0.5rem',
+                  },
+                }
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

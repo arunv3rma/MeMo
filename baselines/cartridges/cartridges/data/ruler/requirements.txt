@@ -1,0 +1,4 @@
+html2
+bs4
+nltk
+wonderwords

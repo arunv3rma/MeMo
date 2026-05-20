@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cartridges"
+version = "0.0.1"
+description = "Lightweight and general-purpose long-context representations"
+requires-python = ">=3.12"
+dependencies = [
+    "torch",
+    "openai",
+    "datasets",
+    "transformers>=4.49.0,<=4.55",
+    "numpy",
+    "einops",
+    "tqdm",
+    "wandb",
+    "pydrantic",
+    "tiktoken",
+    "peft",
+    "evaluate",
+    "matplotlib",
+    "markdown"
+]
+
+[project.scripts]
+pdr = "pdr.cli:main"
+
+[tool.setuptools]
+packages = ["cartridges", "examples"]

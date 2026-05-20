@@ -1,0 +1,372 @@
+{{Short description|Multivariate derivative (mathematics)}}
+{{about|a generalized derivative of a multivariate function|another use in mathematics|Slope|a similarly spelled unit of angle|Gradian|other uses}}
+{{more citations needed|date=January 2018}}
+[[File:Gradient2.svg|thumb|300px|The gradient, represented by the blue arrows, denotes the direction of greatest change of a scalar function. The values of the function are represented in greyscale and increase in value from white (low) to dark (high).]]
+
+In [[vector calculus]], the '''gradient''' of a [[scalar-valued function|scalar-valued]] [[differentiable function]] <math>f</math> of [[Multivalued function|several variables]] is the [[vector field]] (or [[vector-valued function]]) <math>\nabla f</math> whose value at a point <math>p</math> gives the direction and the rate of fastest increase. The gradient transforms like a vector under change of basis of the space of variables of <math>f</math>. If the gradient of a function is non-zero at a point <math>p</math>, the direction of the gradient is the direction in which the function increases most quickly from <math>p</math>, and the [[magnitude (mathematics)|magnitude]] of the gradient is the rate of increase in that direction, the greatest [[absolute value|absolute]] directional derivative.<ref>
+*{{harvtxt|Bachman|2007|p=77}}
+*{{harvtxt|Downing|2010|pp=316–317}}
+*{{harvtxt|Kreyszig|1972|p=309}}
+*{{harvtxt|McGraw-Hill|2007|p=196}}
+*{{harvtxt|Moise|1967|p=684}}
+*{{harvtxt|Protter|Morrey|1970|p=715}}
+*{{harvtxt|Swokowski et al.|1994|pp=1036,1038–1039}}</ref> Further, a point where the gradient is the zero vector is known as a [[stationary point]]. The gradient thus plays a fundamental role in [[optimization theory]], where it is used to minimize a function by [[gradient descent]]. In coordinate-free terms, the gradient of a function <math>f(\mathbf{r})</math> may be defined by:
+
+<math display="block">df=\nabla f \cdot d\mathbf{r}</math>
+
+where <math>df</math> is the total infinitesimal change in <math>f</math> for an infinitesimal displacement  <math>d\mathbf{r}</math>, and is seen to be maximal when <math>d\mathbf{r}</math> is in the direction of the gradient <math>\nabla f</math>. The [[nabla symbol]] <math>\nabla</math>, written as an upside-down triangle and pronounced "del", denotes the [[Del|vector differential operator]].
+
+When a coordinate system is used in which the basis vectors are not functions of position, the gradient is given by the [[Vector (mathematics and physics)|vector]]{{efn|name=row-column|This article uses the convention that [[column vector]]s represent vectors, and [[row vector]]s represent covectors, but the opposite convention is also common.}} whose components are the [[partial derivative]]s of <math>f</math> at <math>p</math>.<ref>
+*{{harvtxt|Bachman|2007|p=76}}
+*{{harvtxt|Beauregard|Fraleigh|1973|p=84}}
+*{{harvtxt|Downing|2010|p=316}}
+*{{harvtxt|Harper|1976|p=15}}
+*{{harvtxt|Kreyszig|1972|p=307}}
+*{{harvtxt|McGraw-Hill|2007|p=196}}
+*{{harvtxt|Moise|1967|p=683}}
+*{{harvtxt|Protter|Morrey|1970|p=714}}
+*{{harvtxt|Swokowski et al.|1994|p=1038}}</ref> That is, for <math>f \colon \R^n \to \R</math>, its gradient <math>\nabla f \colon \R^n \to \R^n</math> is defined at the point <math>p = (x_1,\ldots,x_n)</math> in ''n''-dimensional space as the vector{{efn|Strictly speaking, the gradient is a [[vector field]] <math>f \colon \R^n \to T\R^n</math>, and the value of the gradient at a point is a [[tangent vector]] in the [[tangent space]] at that point, <math>T_p \R^n</math>, not a vector in the original space <math>\R^n</math>. However, all the tangent spaces can be naturally identified with the original space <math>\R^n</math>, so these do not need to be distinguished; see {{slink||Definition}} and [[#Derivative|relationship with the derivative]].}}
+
+<math display="block">\nabla f(p) = \begin{bmatrix}
+ \frac{\partial f}{\partial x_1}(p) \\
+ \vdots \\
+ \frac{\partial f}{\partial x_n}(p)
+\end{bmatrix}.</math>
+
+Note that the above definition for gradient is defined for the function <math>f</math> only if <math>f</math> is differentiable at <math>p</math>. There can be functions for which partial derivatives exist in every direction but fail to be differentiable. Furthermore, this definition as the vector of partial derivatives is only valid when the basis of the coordinate system is [[Orthonormal basis|orthonormal]]. For any other basis, the [[metric tensor]] at that point needs to be taken into account.
+
+For example, the function <math>f(x,y)=\frac {x^2 y}{x^2+y^2}</math> unless at origin where <math>f(0,0)=0</math>, is not differentiable at the origin as it does not have a well defined tangent plane despite having well defined partial derivatives in every direction at the origin.<ref>{{Cite web |title=Non-differentiable functions must have discontinuous partial derivatives - Math Insight |url=https://mathinsight.org/nondifferentiable_discontinuous_partial_derivatives |access-date=2023-10-21 |website=mathinsight.org}}</ref> In this particular example, under rotation of x-y coordinate system, the above formula for gradient fails to transform like a vector (gradient becomes dependent on choice of basis for coordinate system) and also fails to point towards the 'steepest ascent' in some orientations. For differentiable functions where the formula for gradient holds, it can be shown to always transform as a vector under transformation of the basis so as to always point towards the fastest increase.
+
+The gradient is dual to the [[total derivative]] <math>df</math>: the value of the gradient at a point is a [[tangent vector]] – a vector at each point; while the value of the derivative at a point is a [[cotangent vector|''co''tangent vector]] – a linear functional on vectors.{{efn|The value of the gradient at a point can be thought of as a vector in the original space <math>\R^n</math>, while the value of the derivative at a point can be thought of as a covector on the original space: a linear map <math>\R^n \to \R</math>.}} They are related in that the [[dot product]] of the gradient of <math>f</math> at a point <math>p</math> with another tangent vector <math>\mathbf{v}</math> equals the [[directional derivative]] of <math>f</math> at <math>p</math> of the function along <math>\mathbf{v}</math>; that is, <math display="inline">\nabla f(p) \cdot \mathbf v = \frac{\partial f}{\partial\mathbf{v}}(p) = df_{p}(\mathbf{v}) </math>. 
+The gradient admits multiple generalizations to more general functions on [[manifold]]s; see {{slink||Generalizations}}.
+
+==Motivation==
+[[File:Vector Field of a Function's Gradient imposed over a Color Plot of that Function.svg|thumb|500px|Gradient of the 2D function {{math|1=''f''(''x'', ''y'') = ''xe''<sup>−(''x''<sup>2</sup> + ''y''<sup>2</sup>)</sup>}} is plotted as arrows over the pseudocolor plot of the function.]]
+
+Consider a room where the temperature is given by a [[scalar field]], {{math|''T''}}, so at each point {{math|(''x'', ''y'', ''z'')}} the temperature is {{math|''T''(''x'', ''y'', ''z'')}}, independent of time. At each point in the room, the gradient of {{math|''T''}} at that point will show the direction in which the temperature rises most quickly, moving away from {{math|(''x'', ''y'', ''z'')}}. The magnitude of the gradient will determine how fast the temperature rises in that direction.
+
+Consider a surface whose height above sea level at point {{math|(''x'', ''y'')}} is {{math|''H''(''x'', ''y'')}}. The gradient of {{math|''H''}} at a point is a plane vector pointing in the direction of the steepest slope or [[Grade (slope)|grade]] at that point. The steepness of the slope at that point is given by the magnitude of the gradient vector.
+
+The gradient can also be used to measure how a scalar field changes in other directions, rather than just the direction of greatest change, by taking a [[dot product]]. Suppose that the steepest slope on a hill is 40%. A road going directly uphill has slope 40%, but a road going around the hill at an angle will have a shallower slope. For example, if the road is at a 60° angle from the uphill direction (when both directions are projected onto the horizontal plane), then the slope along the road will be the dot product between the gradient vector and a [[unit vector]] along the road, as the dot product measures how much the unit vector along the road aligns with the steepest slope,{{efn|the dot product (the slope of the road around the hill) would be 40% if the degree between the road and the steepest slope is 0°, i.e. when they are completely aligned, and flat when the degree is 90°, i.e. when the road is perpendicular to the steepest slope.}} which is 40% times the [[cosine]] of 60°, or 20%.
+
+More generally, if the hill height function {{math|''H''}} is [[differentiable function|differentiable]], then the gradient of {{math|''H''}} [[dot product|dotted]] with a [[unit vector]] gives the slope of the hill in the direction of the vector, the [[directional derivative]] of {{math|''H''}} along the unit vector.
+
+==Notation==
+
+The gradient of a function <math>f</math> at point <math>a</math> is usually written as <math>\nabla f (a)</math>. It may also be denoted by any of the following:
+
+* <math>\vec{\nabla} f (a)</math> : to emphasize the vector nature of the result.
+* <math>\operatorname{grad} f</math>
+* <math>\partial_i f</math> and <math>f_{i}</math> : Written with [[Einstein notation]], where repeated indices ({{math|i}}) are summed over.
+
+==Definition==
+[[File:3d-gradient-cos.svg|thumb|350px|The gradient of the function {{math|''f''(''x'',''y'') {{=}} −(cos<sup>2</sup>''x'' + cos<sup>2</sup>''y'')<sup>2</sup>}} depicted as a projected [[vector field]] on the bottom plane.]]
+
+The gradient (or gradient vector field) of a scalar function {{math|''f''(''x''<sub>1</sub>, ''x''<sub>2</sub>, ''x''<sub>3</sub>, …, ''x<sub>n</sub>'')}} is denoted {{math|∇''f''}} or {{math|{{vec|∇}}''f''}}  where {{math|∇}} ([[nabla symbol|nabla]]) denotes the vector [[differential operator]], [[del]]. The notation {{math|grad ''f''}}  is also commonly used to represent the gradient. The gradient of {{math|''f''}} is defined as the unique vector field whose dot product with any [[Euclidean vector|vector]] {{math|'''v'''}} at each point {{math|''x''}} is the directional derivative of {{math|''f''}} along {{math|'''v'''}}. That is,
+
+<math display="block">\big(\nabla f(x)\big)\cdot \mathbf{v} = D_{\mathbf v}f(x)</math>
+
+where the right-hand side is the [[directional derivative]] and there are many ways to represent it. Formally, the derivative is ''dual'' to the gradient; see [[#Derivative|relationship with derivative]].
+
+When a function also depends on a parameter such as time, the gradient often refers simply to the vector of its spatial derivatives only (see [[Spatial gradient]]).
+
+The magnitude and direction of the gradient vector are [[Invariant (mathematics)|independent]] of the particular [[Coordinate system|coordinate representation]].<ref>{{harvtxt|Kreyszig|1972|pp=308–309}}</ref><ref>{{harvtxt|Stoker|1969|p=292}}</ref>
+
+===Cartesian coordinates===
+In the three-dimensional [[Cartesian coordinate system]] with a [[Euclidean metric]], the gradient, if it exists, is given by
+
+<math display="block">\nabla f = \frac{\partial f}{\partial x} \mathbf{i} + \frac{\partial f}{\partial y} \mathbf{j} + \frac{\partial f}{\partial z} \mathbf{k},</math>
+
+where {{math|'''i'''}}, {{math|'''j'''}}, {{math|'''k'''}} are the [[standard basis|standard]] unit vectors in the directions of the {{math|''x''}}, {{math|''y''}} and {{math|''z''}} coordinates, respectively. For example, the gradient of the function
+<math display="block">f(x,y,z)= 2x+3y^2-\sin(z)</math>
+is
+<math display="block">\nabla f(x, y, z) = 2\mathbf{i}+ 6y\mathbf{j} -\cos(z)\mathbf{k}.</math>
+or 
+<math display="block">\nabla f(x, y, z) = 
+\begin{bmatrix}
+ 2 \\
+ 6y \\
+ -\cos z
+\end{bmatrix}.
+</math>
+
+In some applications it is customary to represent the gradient as a [[row vector]] or [[column vector]] of its components in a rectangular coordinate system; this article follows the convention of the gradient being a column vector, while the derivative is a row vector.
+
+===Cylindrical and spherical coordinates===
+{{main|Del in cylindrical and spherical coordinates}}
+
+In [[cylindrical coordinate system#Definition|cylindrical coordinates]], the gradient is given by:<ref name="Schey-1992" />
+
+<math display="block">\nabla f(\rho, \varphi, z) = \frac{\partial f}{\partial \rho}\mathbf{e}_\rho + \frac{1}{\rho}\frac{\partial f}{\partial \varphi}\mathbf{e}_\varphi + \frac{\partial f}{\partial z}\mathbf{e}_z,</math>
+
+where {{math|''ρ''}} is the axial distance, {{math|''φ''}} is the azimuthal or azimuth angle, {{math|''z''}} is the axial coordinate, and {{math|'''e'''<sub>''ρ''</sub>}}, {{math|'''e'''<sub>''φ''</sub>}} and {{math|'''e'''<sub>''z''</sub>}} are unit vectors pointing along the coordinate directions.
+
+In [[spherical coordinate system#Definition|spherical coordinates]] with a Euclidean metric, the gradient is given by:<ref name="Schey-1992">{{harvnb|Schey|1992|pp=139–142}}.</ref>
+
+<math display="block">\nabla f(r, \theta, \varphi) = \frac{\partial f}{\partial r}\mathbf{e}_r + \frac{1}{r}\frac{\partial f}{\partial \theta}\mathbf{e}_\theta + \frac{1}{r \sin\theta}\frac{\partial f}{\partial \varphi}\mathbf{e}_\varphi,</math>
+
+where {{math|''r''}} is the radial distance, {{math|''φ''}} is the azimuthal angle and {{math|''θ''}} is the polar angle, and {{math|'''e'''<sub>''r''</sub>}}, {{math|'''e'''<sub>''θ''</sub>}} and {{math|'''e'''<sub>''φ''</sub>}} are again local unit vectors pointing in the coordinate directions (that is, the normalized [[Curvilinear coordinates#Covariant and contravariant bases|covariant basis]]).
+
+For the gradient in other [[orthogonal coordinate system]]s, see [[Orthogonal coordinates#Differential operators in three dimensions|Orthogonal coordinates (Differential operators in three dimensions)]].
+
+===General coordinates===
+We consider [[Curvilinear coordinates|general coordinates]], which we write as {{math|''x''<sup>1</sup>, …, ''x''<sup>''i''</sup>, …, ''x''<sup>''n''</sup>}}, where {{mvar|n}} is the number of dimensions of the domain. Here, the upper index refers to the position in the list of the coordinate or component, so {{math|''x''<sup>2</sup>}} refers to the second component—not the quantity {{math|''x''}} squared. The index variable {{math|''i''}} refers to an arbitrary element {{math|''x''<sup>''i''</sup>}}. Using [[Einstein notation]], the gradient can then be written as:
+
+<math display="block">\nabla f = \frac{\partial f}{\partial x^{i}}g^{ij} \mathbf{e}_j</math> (Note that its [[Dual space|dual]] is <math display="inline">\mathrm{d}f = \frac{\partial f}{\partial x^{i}}\mathbf{e}^i</math>),
+
+where <math>\mathbf{e}^i = \mathrm{d}x^i</math> and <math>\mathbf{e}_i = \partial \mathbf{x}/\partial x^i</math> refer to the unnormalized local [[Curvilinear coordinates#Covariant and contravariant bases|covariant and contravariant bases]] respectively, <math>g^{ij}</math> is the [[Metric tensor#Inverse metric|inverse metric tensor]], and the Einstein summation convention implies summation over ''i''  and ''j''.
+
+If the coordinates are orthogonal we can easily express the gradient (and the [[Differential form|differential]]) in terms of the normalized bases, which we refer to as  <math>\hat{\mathbf{e}}_i</math> and  <math>\hat{\mathbf{e}}^i</math>, using the scale factors (also known as [[Lamé coefficients]])  <math>h_i= \lVert \mathbf{e}_i \rVert = \sqrt{g_{i i}} = 1\, / \lVert \mathbf{e}^i \rVert</math> :
+
+<math display="block">\nabla f = \frac{\partial f}{\partial x^{i}}g^{ij} \hat{\mathbf{e}}_{j}\sqrt{g_{jj}} = \sum_{i=1}^n \, \frac{\partial f}{\partial x^{i}} \frac{1}{h_i} \mathbf{\hat{e}}_i</math> (and <math display="inline">\mathrm{d}f = \sum_{i=1}^n \, \frac{\partial f}{\partial x^{i}} \frac{1}{h_i} \mathbf{\hat{e}}^i</math>),
+
+where we cannot use Einstein notation, since it is impossible to avoid the repetition of more than two indices. Despite the use of upper and lower indices, <math>\mathbf{\hat{e}}_i</math>, <math>\mathbf{\hat{e}}^i</math>, and <math>h_i</math> are neither contravariant nor covariant.
+
+The latter expression evaluates to the expressions given above for cylindrical and spherical coordinates.
+
+==Relationship with derivative{{anchor|Derivative}}==
+{{Calculus|Vector}}
+
+===Relationship with total derivative{{anchor|Total derivative}}===
+The gradient is closely related to the [[total derivative]] ([[total differential]]) <math>df</math>: they are [[transpose]] ([[Transpose of a linear map|dual]]) to each other. Using the convention that vectors in <math>\R^n</math> are represented by [[column vector]]s, and that covectors (linear maps <math>\R^n \to \R</math>) are represented by [[row vector]]s,{{efn|name=row-column}} the gradient <math>\nabla f</math> and the derivative <math>df</math> are expressed as a column and row vector, respectively, with the same components, but transpose of each other:
+
+<math display="block">\nabla f(p) = \begin{bmatrix}\frac{\partial f}{\partial x_1}(p) \\ \vdots \\ \frac{\partial f}{\partial x_n}(p) \end{bmatrix} ;</math>
+<math display="block">df_p = \begin{bmatrix}\frac{\partial f}{\partial x_1}(p) & \cdots & \frac{\partial f}{\partial x_n}(p) \end{bmatrix} .</math>
+
+While these both have the same components, they differ in what kind of mathematical object they represent: at each point, the derivative is a [[cotangent vector]], a [[linear form]] (or covector) which expresses how much the (scalar) output changes for a given infinitesimal change in (vector) input, while at each point, the gradient is a [[tangent vector]], which represents an infinitesimal change in (vector) input. In symbols, the gradient is an element of the tangent space at a point, <math>\nabla f(p) \in T_p \R^n</math>, while the derivative is a map from the tangent space to the real numbers, <math>df_p \colon T_p \R^n \to \R</math>. The tangent spaces at each point of <math>\R^n</math> can be "naturally" identified{{efn|Informally, "naturally" identified means that this can be done without making any arbitrary choices. This can be formalized with a [[natural transformation]].}} with the vector space <math>\R^n</math> itself, and similarly the cotangent space at each point can be naturally identified with the [[dual vector space]] <math>(\R^n)^*</math> of covectors; thus the value of the gradient at a point can be thought of a vector in the original <math>\R^n</math>, not just as a tangent vector.
+
+Computationally, given a tangent vector, the vector can be ''multiplied'' by the derivative (as matrices), which is equal to taking the [[dot product]] with the gradient:
+<math display="block">
+(df_p)(v) = \begin{bmatrix}\frac{\partial f}{\partial x_1}(p) & \cdots & \frac{\partial f}{\partial x_n}(p) \end{bmatrix}
+\begin{bmatrix}v_1 \\ \vdots \\ v_n\end{bmatrix}
+= \sum_{i=1}^n \frac{\partial f}{\partial x_i}(p) v_i
+= \begin{bmatrix}\frac{\partial f}{\partial x_1}(p) \\ \vdots \\ \frac{\partial f}{\partial x_n}(p) \end{bmatrix} \cdot \begin{bmatrix}v_1 \\ \vdots \\ v_n\end{bmatrix}
+= \nabla f(p) \cdot v</math>
+
+====Differential or (exterior) derivative====
+The best linear approximation to a differentiable function
+<math display="block">f : \R^n \to \R</math>
+at a point <math>x</math> in <math>\R^n</math> is a linear map from <math>\R^n</math> to <math>\R</math> which is often denoted by <math>df_x</math> or <math>Df(x)</math> and called the [[differential (calculus)|differential]] or [[total derivative]] of <math>f</math> at <math>x</math>. The function <math>df</math>, which maps <math>x</math> to <math>df_x</math>, is called the [[total differential]] or [[exterior derivative]] of <math>f</math> and is an example of a [[differential 1-form]].
+
+Much as the derivative of a function of a single variable represents the [[slope]] of the [[tangent]] to the [[graph of a function|graph]] of the function,<ref>{{harvtxt|Protter|Morrey|1970|pp=21,88}}</ref> the directional derivative of a function in several variables represents the slope of the tangent [[hyperplane]] in the direction of the vector.
+
+The gradient is related to the differential by the formula
+<math display="block">(\nabla f)_x\cdot v = df_x(v)</math>
+for any <math>v\in\R^n</math>, where <math>\cdot</math> is the [[dot product]]: taking the dot product of a vector with the gradient is the same as taking the directional derivative along the vector.
+
+If <math>\R^n</math> is viewed as the space of (dimension <math>n</math>) column vectors (of real numbers), then one can regard <math>df</math> as the row vector with components
+<math display="block">\left( \frac{\partial f}{\partial x_1}, \dots, \frac{\partial f}{\partial x_n}\right),</math>
+so that <math>df_x(v)</math> is given by [[matrix multiplication]]. Assuming the standard Euclidean metric on <math>\R^n</math>, the gradient is then the corresponding column vector, that is,
+<math display="block">(\nabla f)_i = df^\mathsf{T}_i.</math>
+
+====Linear approximation to a function====
+The best [[linear approximation]] to a function can be expressed in terms of the gradient, rather than the derivative. The gradient of a [[function (mathematics)|function]] <math>f</math> from the Euclidean space <math>\R^n</math> to <math>\R</math> at any particular point <math>x_0</math> in <math>\R^n</math> characterizes the best [[linear approximation]] to <math>f</math> at <math>x_0</math>. The approximation is as follows:
+
+<math display="block">f(x) \approx f(x_0) + (\nabla f)_{x_0}\cdot(x-x_0)</math>
+
+for <math>x</math> close to <math>x_0</math>, where <math>(\nabla f)_{x_0}</math> is the gradient of <math>f</math> computed at <math>x_0</math>, and the dot denotes the dot product on <math>\R^n</math>. This equation is equivalent to the first two terms in the [[Taylor series#Taylor series in several variables|multivariable Taylor series]] expansion of <math>f</math> at <math>x_0</math>.
+
+===Relationship with {{vanchor|Fréchet derivative}}===
+Let {{math|''U''}} be an [[open set]] in {{math|'''R'''<sup>''n''</sup>}}. If the function {{math|''f'' : ''U'' → '''R'''}} is differentiable, then the differential of {{math|''f''}} is the [[Fréchet derivative]] of {{math|''f''}}. Thus {{math|∇''f''}} is a function from {{math|''U''}} to the space {{math|'''R'''<sup>''n''</sup>}} such that
+<math display="block">\lim_{h\to 0} \frac{|f(x+h)-f(x) -\nabla f(x)\cdot h|}{\|h\|} = 0,</math>
+where · is the dot product.
+
+As a consequence, the usual properties of the derivative hold for the gradient, though the gradient is not a derivative itself, but rather dual to the derivative:
+
+;[[Linearity]]
+:The gradient is linear in the sense that if {{math|''f''}} and {{math|''g''}} are two real-valued functions differentiable at the point {{math|''a'' ∈ '''R'''<sup>''n''</sup>}}, and {{mvar|α}} and {{mvar|β}} are two constants, then {{math|''αf'' + ''βg''}} is differentiable at {{math|''a''}}, and moreover <math display="block">\nabla\left(\alpha f+\beta g\right)(a) = \alpha \nabla f(a) + \beta\nabla g (a).</math>
+;[[Product rule]]
+:If {{math|''f''}} and {{math|''g''}} are real-valued functions differentiable at a point {{math|''a'' ∈ '''R'''<sup>''n''</sup>}}, then the product rule asserts that the product {{math|''fg''}} is differentiable at {{math|''a''}}, and <math display="block">\nabla (fg)(a) = f(a)\nabla g(a) + g(a)\nabla f(a).</math>
+;[[Chain rule]]
+:Suppose that {{math|''f'' : ''A'' → '''R'''}} is a real-valued function defined on a subset {{math|''A''}} of {{math|'''R'''<sup>''n''</sup>}}, and that {{math|''f''}} is differentiable at a point {{math|''a''}}. There are two forms of the chain rule applying to the gradient. First, suppose that the function {{math|''g''}} is a [[parametric curve]]; that is, a function {{math|''g'' : ''I'' → '''R'''<sup>''n''</sup>}} maps a subset {{math|''I'' ⊂ '''R'''}} into {{math|'''R'''<sup>''n''</sup>}}. If {{math|''g''}} is differentiable at a point {{math|''c'' ∈ ''I''}} such that {{math|''g''(''c'') {{=}} ''a''}}, then <math display="block">(f\circ g)'(c) = \nabla f(a)\cdot g'(c),</math> where ∘ is the [[composition operator]]: {{math|1=(''f'' ∘ ''g'')(''x'') = ''f''(''g''(''x''))}}.
+
+More generally, if instead {{math|''I'' ⊂ '''R'''<sup>''k''</sup>}}, then the following holds:
+<math display="block">\nabla (f\circ g)(c) = \big(Dg(c)\big)^\mathsf{T} \big(\nabla f(a)\big),</math>
+where {{math|(''Dg'')}}<sup>T</sup> denotes the transpose [[Jacobian matrix]].
+
+For the second form of the chain rule, suppose that {{math|''h'' : ''I'' → '''R'''}} is a real valued function on a subset {{math|''I''}} of {{math|'''R'''}}, and that {{math|''h''}} is differentiable at the point {{math|''f''(''a'') ∈ ''I''}}. Then
+<math display="block">\nabla (h\circ f)(a) = h'\big(f(a)\big)\nabla f(a).</math>
+
+==Further properties and applications==
+
+===Level sets===
+{{see also|Level set#Level sets versus the gradient}}
+A level surface, or [[isosurface]], is the set of all points where some function has a given value.
+
+If {{math|''f''}} is differentiable, then the dot product {{math|(∇''f''&thinsp;)<sub>''x''</sub> ⋅ ''v''}} of the gradient at a point {{math|''x''}} with a vector {{math|''v''}} gives the directional derivative of {{math|''f''}} at {{math|''x''}} in the direction {{math|''v''}}. It follows that in this case the gradient of {{math|''f''}} is [[orthogonal]] to the [[level set]]s of {{math|''f''}}. For example, a level surface in three-dimensional space is defined by an equation of the form {{math|1=''F''(''x'', ''y'', ''z'') = ''c''}}. The gradient of {{math|''F''}} is then normal to the surface.
+
+More generally, any [[embedded submanifold|embedded]] [[hypersurface]] in a [[Riemannian manifold]] can be cut out by an equation of the form {{math|1=''F''(''P'') = 0}} such that {{math|''dF''}} is nowhere zero. The gradient of {{math|''F''}} is then normal to the hypersurface.
+
+Similarly, an [[affine algebraic variety|affine algebraic hypersurface]] may be defined by an equation {{math|1=''F''(''x''<sub>1</sub>, ..., ''x''<sub>''n''</sub>) = 0}}, where {{math|''F''}} is a polynomial. The gradient of {{math|''F''}} is zero at a singular point of the hypersurface (this is the definition of a singular point). At a non-singular point, it is a nonzero normal vector.
+
+===Conservative vector fields and the gradient theorem===
+{{main|Gradient theorem}}
+
+The gradient of a function is called a gradient field. A (continuous) gradient field is always a [[conservative vector field]]: its [[line integral]] along any path depends only on the endpoints of the path, and can be evaluated by the gradient theorem (the fundamental theorem of calculus for line integrals). Conversely, a (continuous) conservative vector field is always the gradient of a function.
+
+===Gradient is direction of steepest ascent===
+The gradient of a function <math>f \colon \R^n \to \R</math> at point {{math|''x''}} is also the direction of its steepest ascent, i.e. it maximizes its [[directional derivative]]:
+
+Let <math> v \in \R^n</math> be an arbitrary unit vector. With the directional derivative defined as
+
+<math display="block">\nabla_v f (x) = \lim_{h \rightarrow 0} \frac{f(x + vh) - f(x)}{h},</math>
+
+we get, by substituting the function <math>f(x + vh)</math> with its [[Taylor series]],
+
+<math display="block">\nabla_v f (x) = \lim_{h \rightarrow 0} \frac{(f(x) + \nabla f \cdot vh + R) - f(x)}{h},</math>
+
+where <math>R</math> denotes higher order terms in <math>vh</math>.
+
+Dividing by <math>h</math>, and taking the limit yields a term which is bounded from above by the [[Cauchy-Schwarz inequality]]<ref>{{cite book |author1=T. Arens | title=Mathematik |edition=5th |publisher=Springer Spektrum Berlin |year=2022 | doi=10.1007/978-3-662-64389-1 |isbn=978-3-662-64388-4 |url = https://doi.org/10.1007/978-3-662-64389-1}}</ref>
+
+<math display="block">|\nabla_v f (x)| = |\nabla f \cdot v| \le |\nabla f| |v| = |\nabla f|.</math>
+
+Choosing <math>v^* = \nabla f/|\nabla f|</math> maximizes the directional derivative, and equals the upper bound
+
+<math display="block">|\nabla_{v^*} f (x)| = |(\nabla f)^2/|\nabla f|| = |\nabla f|.</math>
+
+==Generalizations==
+
+=== Jacobian ===
+{{Main|Jacobian matrix and determinant}}
+
+The [[Jacobian matrix]] is the generalization of the gradient for vector-valued functions of several variables and [[differentiable map]]s between [[Euclidean space]]s or, more generally, [[manifold]]s.<ref>{{harvtxt|Beauregard|Fraleigh|1973|pp=87,248}}</ref><ref>{{harvtxt|Kreyszig|1972|pp=333,353,496}}</ref>  A further generalization for a function between [[Banach space]]s is the [[Fréchet derivative]].
+
+Suppose {{math|'''f''' : '''R'''<sup>''n''</sup> → '''R'''<sup>''m''</sup>}} is a function such that each of its first-order partial derivatives exist on {{math|ℝ<sup>''n''</sup>}}.  Then the Jacobian matrix of {{math|'''f'''}} is defined to be an {{math|''m''×''n''}} matrix, denoted by <math>\mathbf{J}_\mathbb{f}(\mathbb{x})</math> or simply <math>\mathbf{J}</math>. The {{math|(''i'',''j'')}}th entry is <math display="inline">\mathbf J_{ij} = {\partial f_i} / {\partial x_j}</math>. Explicitly
+<math display="block">\mathbf J = \begin{bmatrix}
+    \dfrac{\partial \mathbf{f}}{\partial x_1} & \cdots & \dfrac{\partial \mathbf{f}}{\partial x_n} \end{bmatrix}
+= \begin{bmatrix}
+    \nabla^\mathsf{T} f_1 \\  
+    \vdots \\
+    \nabla^\mathsf{T} f_m   
+    \end{bmatrix}
+= \begin{bmatrix}
+    \dfrac{\partial f_1}{\partial x_1} & \cdots & \dfrac{\partial f_1}{\partial x_n}\\
+    \vdots & \ddots & \vdots\\
+    \dfrac{\partial f_m}{\partial x_1} & \cdots & \dfrac{\partial f_m}{\partial x_n} \end{bmatrix}.</math>
+
+===Gradient of a vector field===
+{{see also|Covariant derivative}}
+Since the [[total derivative]] of a vector field is a [[linear mapping]] from vectors to vectors, it is a [[tensor]] quantity.
+
+In rectangular coordinates, the gradient of a vector field {{math|1='''f''' = (&thinsp;''f''{{i sup|1}}, ''f''{{i sup|2}}, ''f''{{i sup|3}})}} is defined by:
+
+<math display="block">\nabla \mathbf{f}=g^{jk}\frac{\partial f^i}{\partial x^j} \mathbf{e}_i \otimes \mathbf{e}_k,</math>
+
+(where the [[Einstein summation notation]] is used and the [[tensor product]] of the vectors {{math|'''e'''<sub>''i''</sub>}} and {{math|'''e'''<sub>''k''</sub>}} is a [[dyadic tensor]] of type (2,0)). Overall, this expression equals the transpose of the Jacobian matrix:
+
+<math display="block">\frac{\partial f^i}{\partial x^j} = \frac{\partial (f^1,f^2,f^3)}{\partial (x^1,x^2,x^3)}.</math>
+
+In curvilinear coordinates, or more generally on a curved [[Riemannian manifold|manifold]], the gradient involves [[Christoffel symbols]]:
+
+<math display="block">\nabla \mathbf{f}=g^{jk}\left(\frac{\partial f^i}{\partial x^j}+{\Gamma^i}_{jl}f^l\right) \mathbf{e}_i \otimes \mathbf{e}_k,</math>
+
+where {{math|''g''{{i sup|''jk''}}}} are the components of the inverse [[metric tensor]] and the {{math|'''e'''<sub>''i''</sub>}} are the coordinate basis vectors.
+
+Expressed more invariantly, the gradient of a vector field {{math|'''f'''}} can be defined by the [[Levi-Civita connection]] and metric tensor:<ref>{{harvnb|Dubrovin|Fomenko|Novikov|1991|pages=348–349}}.</ref>
+
+<math display="block">\nabla^a f^b = g^{ac} \nabla_c f^b ,</math>
+
+where {{math|∇<sub>''c''</sub>}} is the connection.
+
+===Riemannian manifolds===
+For any [[smooth function]] {{mvar|f}} on a Riemannian manifold {{math|(''M'', ''g'')}}, the gradient of {{math|''f''}} is the vector field {{math|∇''f''}} such that for any vector field {{math|''X''}},
+<math display="block">g(\nabla f, X) = \partial_X f,</math>
+that is,
+<math display="block">g_x\big((\nabla f)_x, X_x \big) = (\partial_X f) (x),</math>
+where {{math|''g''<sub>''x''</sub>( , )}} denotes the [[inner product]] of tangent vectors at {{math|''x''}} defined by the metric {{math|''g''}} and {{math|∂<sub>''X''</sub>&thinsp;''f''}} is the function that takes any point {{math|''x'' ∈ ''M''}} to the directional derivative of {{math|''f''}} in the direction {{math|''X''}}, evaluated at {{math|''x''}}. In other words, in a [[coordinate chart]] {{math|''φ''}} from an open subset of {{math|''M''}} to an open subset of {{math|'''R'''<sup>''n''</sup>}}, {{math|(∂<sub>''X''</sub>&thinsp;''f''&thinsp;)(''x'')}} is given by:
+<math display="block">\sum_{j=1}^n X^{j} \big(\varphi(x)\big) \frac{\partial}{\partial x_{j}}(f \circ \varphi^{-1}) \Bigg|_{\varphi(x)},</math>
+where {{math|''X''{{isup|''j''}}}} denotes the {{math|''j''}}th component of {{math|''X''}} in this coordinate chart.
+
+So, the local form of the gradient takes the form:
+
+<math display="block">\nabla f = g^{ik} \frac{\partial f}{\partial x^k} {\textbf e}_i .</math>
+
+Generalizing the case {{math|1=''M'' = '''R'''<sup>''n''</sup>}}, the gradient of a function is related to its exterior derivative, since
+<math display="block">(\partial_X f) (x) = (df)_x(X_x) .</math>
+More precisely, the gradient {{math|∇''f''}} is the vector field associated to the differential 1-form {{math|''df''}} using the [[musical isomorphism]]
+<math display="block">\sharp=\sharp^g\colon T^*M\to TM</math>
+(called "sharp") defined by the metric {{math|''g''}}. The relation between the exterior derivative and the gradient of a function on {{math|'''R'''<sup>''n''</sup>}} is a special case of this in which the metric is the flat metric given by the dot product.
+
+==See also==
+{{commons category|Gradient fields}}
+* {{Annotated link|Curl (mathematics)|Curl}}
+* {{Annotated link|Divergence}}
+* {{Annotated link|Four-gradient}}
+* {{Annotated link|Hessian matrix}}
+* {{Annotated link|Skew gradient}}
+* {{Annotated link|Spatial gradient}}
+
+== Notes ==
+{{notelist}}
+
+== References ==
+{{reflist}}<ref>{{Cite web |title=Vector Calculus: Understanding the Gradient – BetterExplained |url=https://betterexplained.com/articles/vector-calculus-understanding-the-gradient/ |access-date=2024-08-22 |website=betterexplained.com}}</ref>
+* {{citation |last1 = Bachman |first1 = David |title = Advanced Calculus Demystified |location = New York |publisher = [[McGraw-Hill]] |year = 2007 |isbn = 978-0-07-148121-2}}
+* {{citation |last1 = Beauregard |first1 = Raymond A. |last2 = Fraleigh |first2 = John B. |title = A First Course In Linear Algebra: with Optional Introduction to Groups, Rings, and Fields |location = Boston |publisher = [[Houghton Mifflin Company]] |year = 1973 |isbn = 0-395-14017-X |url-access = registration |url = https://archive.org/details/firstcourseinlin0000beau}}
+* {{citation |last1 = Downing |first1 = Douglas, Ph.D. |title = Barron's E-Z Calculus |location = New York |publisher = [[B.E.S. Publishing|Barron's]] |year = 2010 |isbn = 978-0-7641-4461-5}}
+* {{cite book
+ |first1 = B. A.|last1 = Dubrovin
+ |first2 = A. T.|last2 = Fomenko
+ |first3 = S. P.|last3 = Novikov
+ |title = Modern Geometry—Methods and Applications: Part I: The Geometry of Surfaces, Transformation Groups, and Fields
+ |series = [[Graduate Texts in Mathematics]]
+ |publisher = Springer|edition = 2nd|year = 1991
+ |isbn = 978-0-387-97663-1
+}}
+* {{citation |last1 = Harper |first1 = Charlie |title = Introduction to Mathematical Physics |location = New Jersey |publisher = [[Prentice-Hall]] |year = 1976 |isbn = 0-13-487538-9}}
+* {{citation |last1 = Kreyszig |first1 = Erwin |author-link = Erwin Kreyszig |title = Advanced Engineering Mathematics |edition = 3rd |location = New York |publisher = [[John Wiley & Sons|Wiley]] |year = 1972 |isbn = 0-471-50728-8 |url = https://archive.org/details/advancedengineer00krey}}
+* {{cite encyclopedia |encyclopedia = McGraw-Hill Encyclopedia of Science & Technology |edition = 10th |location = New York |publisher = [[McGraw-Hill]] |year = 2007 |isbn = 978-0-07-144143-8 |ref = {{harvid|McGraw-Hill|2007}} |title = McGraw Hill Encyclopedia of Science & Technology}}
+* {{citation |last1 = Moise |first1 = Edwin E. |title = Calculus: Complete |location = Reading |publisher = [[Addison-Wesley]] |year = 1967}}
+* {{citation |last1 = Protter |first1 = Murray H. | last2=Morrey | first2=Charles B. Jr. |title = College Calculus with Analytic Geometry |edition = 2nd |location = Reading |publisher = [[Addison-Wesley]] |year = 1970 |lccn = 76087042}}
+* {{cite book
+ |first = H. M.|last = Schey
+ |title = Div, Grad, Curl, and All That
+ |publisher = W. W. Norton|edition = 2nd|year = 1992|isbn = 0-393-96251-2|oclc = 25048561
+ |url = https://archive.org/details/divgradcurlall00sche
+ }}
+* {{citation |last1 = Stoker |first1 = J. J. |title = Differential Geometry |location = New York |publisher = [[John Wiley & Sons|Wiley]] |year = 1969 |isbn = 0-471-82825-4 }}
+* {{citation |last1 = Swokowski |first1 = Earl W. |last2 = Olinick |first2 = Michael |last3 = Pence |first3 = Dennis |last4 = Cole |first4 = Jeffery A. |title = Calculus |edition = 6th |location = Boston |publisher = PWS Publishing Company |year = 1994 |isbn = 0-534-93624-5 |ref = {{harvid|Swokowski et al.|1994}} |url = https://archive.org/details/calculus00swok }}
+* {{citation |last1 = Arens |first1 = T. |last2 = Hettlich |first2 = F. |last3 = Karpfinger |first3 = C. |last4 = Kockelkorn |first4 = U. |last5 = Lichtenegger |first5 = K. |last6 = Stachel |first6 = H. |title = Mathematik |publisher = Springer Spektrum Berlin |edition = 5th |year = 2022 |doi = 10.1007/978-3-662-64389-1 |isbn = 978-3-662-64388-4 |url = https://doi.org/10.1007/978-3-662-64389-1
+ }}
+
+==Further reading==
+* {{cite book
+ |first1 = Theresa M.
+ |last1 = Korn |author1-link = Theresa M. Korn
+ |first2 = Granino Arthur
+ |last2 = Korn
+ |title = Mathematical Handbook for Scientists and Engineers: Definitions, Theorems, and Formulas for Reference and Review
+ |publisher = Dover Publications
+ |year = 2000
+ |pages = 157–160
+ |isbn = 0-486-41147-8
+ |oclc = 43864234
+}}
+
+==External links==
+{{wiktionary}}
+* {{cite web
+ |url = https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/gradient-and-directional-derivatives/v/gradient
+ |title = Gradient
+ |publisher = [[Khan Academy]]
+}}
+* {{springer
+ |title = Gradient
+ |id = G/g044680
+ |last = Kuptsov
+ |first = L.P.
+}}.
+* {{MathWorld
+ |title = Gradient
+ |urlname = Gradient
+}}
+
+{{Calculus topics}}
+
+[[Category:Differential operators]]
+[[Category:Differential calculus]]
+[[Category:Generalizations of the derivative]]
+[[Category:Linear operators in calculus]]
+[[Category:Vector calculus]]
+[[Category:Rates]]

@@ -1,0 +1,11 @@
+# Extra dependencies for running the baselines.
+# Install on top of ../memo_requirements.txt:
+#     pip install -r ../memo_requirements.txt
+#     pip install -r baselines/requirements.txt
+#
+# Cartridges additionally requires the upstream `cartridges` and `tokasaurus`
+# packages — install those separately following baselines/cartridges/README.md.
+
+bm25s            # BM25 retrieval (baselines/bm25/*)
+hipporag         # HippoRAG2 retrieval (baselines/hipporag2/*)
+pydrantic        # Config framework used by baselines/cartridges/{main,train,synthesize}.py
