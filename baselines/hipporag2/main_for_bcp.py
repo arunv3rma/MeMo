@@ -72,7 +72,7 @@ def process_question(hipporag, entry, args, idx, lock, llm_client, llm_model_id)
                 # QA via canonical prompt — runs OUTSIDE the HippoRAG lock since it's an HTTP call.
                 _t_qa_start = time.perf_counter()
                 answer = generate_answer_vllm_sync(
-                    llm_client, llm_model_id, question, retrieved_docs, seed=args.seed
+                    llm_client, llm_model_id, question, retrieved_docs
                 )
                 _t_qa_canonical = time.perf_counter() - _t_qa_start
             _t_qa = _t_qa_internal + _t_qa_canonical
@@ -455,8 +455,6 @@ def main():
                              "load_only_query_related_docs_with_negatives).")
     parser.add_argument("--neg_n", type=int, default=1, choices=[1, 2],
                         help="Negative-doc multiplier (1=N, 2=2N). Only used with --include_negatives.")
-    parser.add_argument("--seed", type=int, default=1,
-                        help="Seed forwarded to the LLM API for stochastic generation reproducibility.")
     parser.add_argument("--api_key", type=str, default="EMPTY",
                         help="API key for the OpenAI-compatible endpoint. EMPTY for vLLM.")
     parser.add_argument("--use_internal_rag_qa", action="store_true",
@@ -634,13 +632,10 @@ def main():
         llm_base_url=args.api_base
     )
 
-    # When using the library's rag_qa(), force seed/temperature into its LLM config so
-    # different --seed values actually produce different outputs (lib default is temp=0).
     if args.use_internal_rag_qa and hasattr(hipporag, "llm_model"):
         try:
-            hipporag.llm_model.llm_config.generate_params["seed"] = args.seed
             hipporag.llm_model.llm_config.generate_params["temperature"] = 0.7
-            print(f"[internal rag_qa] generate_params override: seed={args.seed}, temperature=0.7")
+            print(f"[internal rag_qa] generate_params override: temperature=0.7")
         except Exception as e:
             print(f"[warn] could not override library generate_params: {e}")
 
@@ -664,7 +659,7 @@ def main():
         timeout=120.0,
     )
     llm_model_id = args.model_id
-    print(f"\nLLM client target: {args.api_base}, model={llm_model_id}, seed={args.seed}")
+    print(f"\nLLM client target: {args.api_base}, model={llm_model_id}")
 
     _t_inf_start = time.perf_counter()
     if args.multi_turn:

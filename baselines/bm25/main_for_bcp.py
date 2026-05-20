@@ -66,7 +66,7 @@ async def process_question(client, model_id, entry, retriever, corpus_texts, cor
             
             # Generate via vLLM asynchronously
             answer = await generate_answer_vllm_async(
-                client, model_id, question, top_k_chunks, seed=args.seed
+                client, model_id, question, top_k_chunks
             )
 
             # Success! Store result with docids
@@ -189,9 +189,6 @@ def main():
                              "(uses load_only_query_related_docs_with_negatives).")
     parser.add_argument("--neg_n", type=int, default=1, choices=[1, 2],
                         help="Negative-doc multiplier (1=N, 2=2N). Only used with --include_negatives.")
-    parser.add_argument("--seed", type=int, default=1,
-                        help="Seed forwarded to the LLM API for stochastic generation reproducibility.")
-
     # --- OpenRouter support (additive; default behavior unchanged) ---
     parser.add_argument("--provider", type=str, default="vllm", choices=["vllm", "openrouter"],
                         help="LLM provider. 'vllm' (default) uses local vLLM via --api_base/--model_id. "

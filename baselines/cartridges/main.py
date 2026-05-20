@@ -21,8 +21,6 @@ parser.add_argument("--dataset", type=str, default="100papers_speculative_decodi
 parser.add_argument("--file_path", type=str, default="", help="File path identifier for cartridges")
 parser.add_argument("--need_to_move_cartridges", action='store_true', help="Indicate this if the cartridges are newly trained and not moved to tokasaurus/cartridges yet")
 parser.add_argument("--port", type=int, default=10223, help="Tokasaurus server port")
-parser.add_argument("--seed", type=int, default=1, help="Seed forwarded to the cartridge server for reproducibility.")
-
 args = parser.parse_args()
 
 
@@ -138,7 +136,6 @@ def generate_answer_cartridges(question):
                 "messages": messages,
                 "max_tokens": 512,
                 "temperature": 0.7,
-                "seed": args.seed,
                 "cartridges": cartridges,
             })
 

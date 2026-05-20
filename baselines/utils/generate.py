@@ -46,7 +46,7 @@ def _parse_answer(output):
 
 
 async def generate_answer_vllm_async(client, model_id, question, context_chunks,
-                                     seed=1, temperature=0.7, max_tokens=512, timeout=240,
+                                     temperature=0.7, max_tokens=512, timeout=240,
                                      **_unused):
     """Async QA call to an OpenAI-compatible chat endpoint. Returns answer string."""
     messages = _qa_messages(question, context_chunks)
@@ -54,7 +54,6 @@ async def generate_answer_vllm_async(client, model_id, question, context_chunks,
         model=model_id,
         messages=messages,
         temperature=temperature,
-        seed=seed,
         max_tokens=max_tokens,
         timeout=timeout,
     )
@@ -65,7 +64,7 @@ async def generate_answer_vllm_async(client, model_id, question, context_chunks,
 
 
 def generate_answer_vllm_sync(client, model_id, question, context_chunks,
-                              seed=1, temperature=0.7, max_tokens=512, timeout=240,
+                              temperature=0.7, max_tokens=512, timeout=240,
                               **_unused):
     """Sync QA call to an OpenAI-compatible chat endpoint. Returns answer string."""
     messages = _qa_messages(question, context_chunks)
@@ -73,7 +72,6 @@ def generate_answer_vllm_sync(client, model_id, question, context_chunks,
         model=model_id,
         messages=messages,
         temperature=temperature,
-        seed=seed,
         max_tokens=max_tokens,
         timeout=timeout,
     )

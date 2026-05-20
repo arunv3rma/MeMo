@@ -25,7 +25,7 @@ baselines/
 ├── cartridges/                     # upstream cartridges source + main.py entrypoint
 ├── utils/                          # shared helpers (generate, read, parse, llm_server,
 │                                   #   third_party_api_client, deepeval_via_algo_utils)
-├── scripts/                        # shell runners, seed aggregation, deepeval orchestration
+├── scripts/                        # shell runners, run aggregation, deepeval orchestration
 └── requirements.txt                # baseline-only extras (bm25s, hipporag, pydrantic)
 ```
 
@@ -60,8 +60,8 @@ python data_processing_utils/download_browsecomplus_questions.py
 ```
 
 Move the outputs into `baselines/data/` so the runners find them:
-- `baselines/data/browsecomp_plus_questions.jsonl` — used by ICL (`--questions_file`) and the seed-sweep scripts (`QUESTIONS`)
-- `baselines/data/browsecomp_plus/full_corpus_train.jsonl` — used by the seed-sweep scripts (`CORPUS`)
+- `baselines/data/browsecomp_plus_questions.jsonl` — used by ICL (`--questions_file`) and the run scripts (`QUESTIONS`)
+- `baselines/data/browsecomp_plus/full_corpus_train.jsonl` — used by the run scripts (`CORPUS`)
 
 Each question is a JSON object with `query_id`, `query`, `answer`, `evidence_docs`, `gold_docs`. By default the ICL runners restrict to the 300-question subset in `data_synthesis_pipeline/data_subsets/bcp_300_queries_id.json`; override with `--query_ids_file`.
 
@@ -71,8 +71,8 @@ Source files come from the [MeMo dataset on Hugging Face](https://huggingface.co
 
 | File | Purpose |
 |---|---|
-| `baselines/data/musique_corpus_chunks_1000.jsonl` | Chunked corpus (seed-sweep `CORPUS`) |
-| `baselines/data/musique_questions_chunks_1000.jsonl` | Chunked questions (seed-sweep `QUESTIONS`) |
+| `baselines/data/musique_corpus_chunks_1000.jsonl` | Chunked corpus (run script `CORPUS`) |
+| `baselines/data/musique_questions_chunks_1000.jsonl` | Chunked questions (run script `QUESTIONS`) |
 
 Chunking is technically optional for MSQ — all 1000 documents are under ~8.5k tokens so each paragraph produces exactly one chunk at default settings — but we use the chunked format for consistency with other baselines.
 
@@ -84,22 +84,22 @@ Otherwise, clone the NarrativeQA dataset locally per `data_processing_utils/READ
 
 Evaluation is restricted to the 10-document `DOC_ID_SUBSET` baked into each script — the same 10 docs used by the HippoRAG2 paper. **Expected question count: 293**: the original NarrativeQA repo yields 294 questions across these IDs, but we drop one exact duplicate (`"Where does Hi get a job at?"`) to match the HippoRAG2 paper.
 
-The seed-sweep scripts expect:
+The run scripts expect:
 - `baselines/data/narrativeqa_dev_10_doc_corpus.json` — corpus (`CORPUS`)
 - `baselines/data/nqa_question.json` — questions (`QUESTIONS`)
 
-## Quick start: per-method seed sweeps
+## Quick start: per-method runs
 
 1. Start the Qwen vLLM server (step 2 above).
 2. Place benchmark inputs under `baselines/data/` (see `scripts/README.md` for expected filenames) and confirm the `API_BASE` / `MODEL_ID` / `API_KEY` block at the top of each script matches your server.
 3. From the repo root, run any combination of:
    ```bash
-   bash baselines/scripts/run_bm25_{bcp,musique,nqa}_qwen_seeds.sh
-   bash baselines/scripts/run_hipporag2_{bcp,musique,nqa}_qwen_seeds.sh
-   bash baselines/scripts/run_nv_embed_{bcp,musique,nqa}_qwen_seeds.sh
-   bash baselines/scripts/run_cartridges_{bcp,musique,nqa}_qwen_seeds.sh
+   bash baselines/scripts/run_bm25_{bcp,musique,nqa}_qwen.sh
+   bash baselines/scripts/run_hipporag2_{bcp,musique,nqa}_qwen.sh
+   bash baselines/scripts/run_nv_embed_{bcp,musique,nqa}_qwen.sh
+   bash baselines/scripts/run_cartridges_{bcp,musique,nqa}_qwen.sh
    ```
-   Each sweeps seeds for that method/benchmark and calls `aggregate_seeds.py` at the end.
+   Each performs 3 independent runs for that method/benchmark and calls `aggregate_runs.py` at the end.
 
 ## Running ICL
 
@@ -136,6 +136,6 @@ The `cartridges/main.py` entrypoint runs the single-turn cartridge inference loo
 
 ## Evaluation
 
-Evaluation is done with `baselines/utils/deepeval_via_algo_utils.py`, which wraps `evaluation_pipeline/deepeval_utils.run_evaluation` (the MeMo paper's correctness metric). You normally don't invoke it directly — the seed-sweep scripts call it per seed, and `baselines/scripts/run_deepeval.sh` is the standalone orchestrator if you want to re-evaluate generated answer JSONs without re-running inference.
+Evaluation is done with `baselines/utils/deepeval_via_algo_utils.py`, which wraps `evaluation_pipeline/deepeval_utils.run_evaluation` (the MeMo paper's correctness metric). You normally don't invoke it directly — the run scripts call it per run, and `baselines/scripts/run_deepeval.sh` is the standalone orchestrator if you want to re-evaluate generated answer JSONs without re-running inference.
 
-For per-seed result aggregation, `scripts/aggregate_seeds.py` combines individual seed JSONs into a `combined_<method>_<bench>_<model>_<timestamp>.json` summary. The seed-sweep scripts call this automatically at the end.
+For per-run result aggregation, `scripts/aggregate_runs.py` combines individual run JSONs into a `combined_<method>_<bench>_<model>_<timestamp>.json` summary. The run scripts call this automatically at the end.

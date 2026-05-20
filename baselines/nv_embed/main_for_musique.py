@@ -101,7 +101,7 @@ async def process_question(client, model_id, entry, retriever_model, corpus_embe
             top_k_chunks = [corpus_texts[i] for i in top_indices]
 
             answer = await generate_answer_vllm_async(
-                client, model_id, question, top_k_chunks, seed=args.seed
+                client, model_id, question, top_k_chunks
             )
 
             if not answer or not answer.strip():
@@ -196,8 +196,6 @@ def main():
                              "load_only_query_related_docs_with_negatives_musique).")
     parser.add_argument("--neg_n", type=int, default=1, choices=[1, 2],
                         help="Negative-doc multiplier (1=N, 2=2N). Only used with --include_negatives.")
-    parser.add_argument("--seed", type=int, default=1,
-                        help="Seed forwarded to the LLM API for stochastic generation reproducibility.")
     parser.add_argument("--provider", type=str, default="vllm", choices=["vllm", "openrouter"],
                         help="LLM provider. 'vllm' (default) or 'openrouter'.")
     parser.add_argument("--openrouter_api_key", type=str, default=None,

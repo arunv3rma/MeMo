@@ -17,15 +17,15 @@ API_KEY=EMPTY
 PROVIDER_FLAGS="--provider vllm"
 MAX_CONCURRENT=16
 
-OUT_DIR=baselines/output_seeded/narrativeqa_dev_10_doc_corpus
-LOG_DIR=baselines/output_seeded/logs
+OUT_DIR=baselines/output_runs/narrativeqa_dev_10_doc_corpus
+LOG_DIR=baselines/output_runs/logs
 mkdir -p "${OUT_DIR}" "${LOG_DIR}"
 
 SUMMARIES=()
-for SEED in 1 2 3; do
-    OUTPUT_FILE=${OUT_DIR}/bm25_qwen_seed${SEED}_${TIMESTAMP}.json
-    LOG_FILE=${LOG_DIR}/bm25_${DATASET}_qwen_seed${SEED}_${TIMESTAMP}.log
-    echo "=== Seed ${SEED}: output=${OUTPUT_FILE} ==="
+for RUN in 1 2 3; do
+    OUTPUT_FILE=${OUT_DIR}/bm25_qwen_run${RUN}_${TIMESTAMP}.json
+    LOG_FILE=${LOG_DIR}/bm25_${DATASET}_qwen_run${RUN}_${TIMESTAMP}.log
+    echo "=== Run ${RUN}: output=${OUTPUT_FILE} ==="
 
     CUDA_VISIBLE_DEVICES=0 python -m baselines.bm25.main_for_nqa \
         --corpus "${CORPUS}" \
@@ -36,7 +36,6 @@ for SEED in 1 2 3; do
     --api_key "${API_KEY}" \
         --max_concurrent "${MAX_CONCURRENT}" \
         --k 9 \
-        --seed ${SEED} \
         --output "${OUTPUT_FILE}" \
         > "${LOG_FILE}" 2>&1
 
@@ -50,7 +49,7 @@ for SEED in 1 2 3; do
 done
 
 COMBINED=${OUT_DIR}/combined_bm25_nqa_qwen_${TIMESTAMP}.json
-python baselines/scripts/aggregate_seeds.py \
+python baselines/scripts/aggregate_runs.py \
     --summary_files "${SUMMARIES[@]}" \
     --output "${COMBINED}"
 echo "=== Combined: ${COMBINED} ==="

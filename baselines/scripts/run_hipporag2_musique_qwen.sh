@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+conda activate hipporag
 
 cd "$(cd "$(dirname "$0")/../.." && pwd)"
 
@@ -16,18 +17,21 @@ MODEL_ID=qwen2_5_32b
 API_KEY=EMPTY
 PROVIDER_FLAGS="--provider vllm"
 MAX_CONCURRENT=64
+export HIPPORAG_OPENIE_MAX_WORKERS=${HIPPORAG_OPENIE_MAX_WORKERS:-16}
 
-OUT_DIR=baselines/output_seeded/musique_corpus_chunks_1000
-LOG_DIR=baselines/output_seeded/logs
+OUT_DIR=baselines/output_runs/musique_corpus_chunks_1000
+LOG_DIR=baselines/output_runs/logs
 mkdir -p "${OUT_DIR}" "${LOG_DIR}"
+SAVE_DIR=baselines/hipporag2/output_musique/${CORPUS_TAG}_runs_qwen_${TIMESTAMP}
+mkdir -p "${SAVE_DIR}"
 
 SUMMARIES=()
-for SEED in 1 2 3; do
-    OUTPUT_FILE=${OUT_DIR}/bm25_qwen_seed${SEED}_${TIMESTAMP}.json
-    LOG_FILE=${LOG_DIR}/bm25_${DATASET}_qwen_seed${SEED}_${TIMESTAMP}.log
-    echo "=== Seed ${SEED}: output=${OUTPUT_FILE} ==="
+for RUN in 1 2 3; do
+    OUTPUT_FILE=${OUT_DIR}/hipporag2_qwen_run${RUN}_${TIMESTAMP}.json
+    LOG_FILE=${LOG_DIR}/hipporag2_${DATASET}_qwen_run${RUN}_${TIMESTAMP}.log
+    echo "=== Run ${RUN}: output=${OUTPUT_FILE} ==="
 
-    CUDA_VISIBLE_DEVICES=0 python -m baselines.bm25.main_for_musique \
+    CUDA_VISIBLE_DEVICES=3 python -m baselines.hipporag2.main_for_musique \
         --corpus "${CORPUS}" \
         --questions "${QUESTIONS}" \
     --max_questions 1000 \
@@ -39,7 +43,7 @@ for SEED in 1 2 3; do
     --api_key "${API_KEY}" \
         --max_concurrent "${MAX_CONCURRENT}" \
         --k 9 \
-        --seed ${SEED} \
+    --save_dir "${SAVE_DIR}" \
         --output "${OUTPUT_FILE}" \
         > "${LOG_FILE}" 2>&1
 
@@ -52,8 +56,8 @@ for SEED in 1 2 3; do
     SUMMARIES+=("${SUM}")
 done
 
-COMBINED=${OUT_DIR}/combined_bm25_musique_qwen_${TIMESTAMP}.json
-python baselines/scripts/aggregate_seeds.py \
+COMBINED=${OUT_DIR}/combined_hipporag2_musique_qwen_${TIMESTAMP}.json
+python baselines/scripts/aggregate_runs.py \
     --summary_files "${SUMMARIES[@]}" \
     --output "${COMBINED}"
 echo "=== Combined: ${COMBINED} ==="

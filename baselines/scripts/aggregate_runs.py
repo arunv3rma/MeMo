@@ -1,4 +1,4 @@
-"""Aggregate per-seed deepeval summaries into mean and sample std.
+"""Aggregate per-run deepeval summaries into mean and sample std.
 
 Reads N summary JSON files (each produced by `baselines/utils/deepeval_via_algo_utils.py`),
 and computes accuracy as perfect_answers / total_questions, where total_questions
@@ -6,7 +6,7 @@ is the full benchmark size (successful + failed entries from the generated file)
 not just the successful subset that deepeval scored.
 
 Usage:
-    python baselines/scripts/aggregate_seeds.py \\
+    python baselines/scripts/aggregate_runs.py \\
         --summary_files <s1.json> <s2.json> <s3.json> \\
         --output <combined.json>
 """
@@ -55,20 +55,20 @@ def compute_score(summary_path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--summary_files", nargs="+", required=True,
-                    help="Per-seed deepeval summary JSON files.")
+                    help="Per-run deepeval summary JSON files.")
     ap.add_argument("--output", required=True, help="Combined output JSON path.")
     args = ap.parse_args()
 
     if len(args.summary_files) < 1:
         raise ValueError("Need at least 1 summary file.")
 
-    per_seed = []
+    per_run = []
     for p in args.summary_files:
         rec = compute_score(p)
         rec["summary_file"] = str(p)
-        per_seed.append(rec)
+        per_run.append(rec)
 
-    scores = [r["average_score"] for r in per_seed]
+    scores = [r["average_score"] for r in per_run]
     mean = statistics.fmean(scores)
     sstd = statistics.stdev(scores) if len(scores) >= 2 else None  # sample std (n-1); undefined for n<2
 
@@ -79,14 +79,14 @@ def main():
         "min": min(scores),
         "max": max(scores),
         "metric": "perfect_answers / total_questions (success + failed)",
-        "per_seed": per_seed,
+        "per_run": per_run,
     }
 
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(out, f, indent=2, ensure_ascii=False)
-    print(f"Aggregated {len(scores)} scores -> {args.output}")
-    sstd_str = f"{sstd:.4f}" if sstd is not None else "n/a (single-seed)"
+    print(f"Aggregated {len(scores)} runs -> {args.output}")
+    sstd_str = f"{sstd:.4f}" if sstd is not None else "n/a (single run)"
     print(f"  mean={mean:.4f}, sample_std={sstd_str}, scores={scores}")
 
 

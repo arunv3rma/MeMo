@@ -87,7 +87,7 @@ async def process_question(client, model_id, entry, retriever, corpus_texts, cor
                     retrieved_indices.append(-1)
 
             answer = await generate_answer_vllm_async(
-                client, model_id, question, top_k_chunks, seed=args.seed
+                client, model_id, question, top_k_chunks
             )
 
             if not answer or not answer.strip():
@@ -171,9 +171,6 @@ def main():
     parser.add_argument("--api_key", type=str, default="EMPTY",
                         help="API key for the OpenAI-compatible endpoint. Use EMPTY for local vLLM, "
                              "or pass an OpenRouter key when --api_base points at OpenRouter.")
-    parser.add_argument("--seed", type=int, default=1,
-                        help="Seed forwarded to the LLM API for stochastic generation reproducibility.")
-
     parser.add_argument("--provider", type=str, default="vllm", choices=["vllm", "openrouter"],
                         help="LLM provider. 'vllm' (default) or 'openrouter'.")
     parser.add_argument("--openrouter_api_key", type=str, default=None,

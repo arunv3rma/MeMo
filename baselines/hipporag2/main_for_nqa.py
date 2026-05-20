@@ -95,7 +95,7 @@ def process_question(hipporag, entry, args, idx, lock, llm_client, llm_model_id)
             if not getattr(args, "use_internal_rag_qa", False):
                 _t_qa_start = time.perf_counter()
                 answer = generate_answer_vllm_sync(
-                    llm_client, llm_model_id, question, retrieved_docs, seed=args.seed
+                    llm_client, llm_model_id, question, retrieved_docs
                 )
                 _t_qa_canonical = time.perf_counter() - _t_qa_start
             _t_qa = _t_qa_internal + _t_qa_canonical
@@ -217,8 +217,6 @@ def main():
                         help="OpenRouter OpenAI-compatible base URL.")
     parser.add_argument("--openrouter_model_id", type=str, default="google/gemini-3-flash",
                         help="OpenRouter model ID (e.g. google/gemini-3-flash).")
-    parser.add_argument("--seed", type=int, default=1,
-                        help="Seed forwarded to the LLM API for stochastic generation reproducibility.")
     parser.add_argument("--api_key", type=str, default="EMPTY",
                         help="API key for the OpenAI-compatible endpoint. EMPTY for vLLM.")
     parser.add_argument("--use_internal_rag_qa", action="store_true",
@@ -336,9 +334,8 @@ def main():
 
     if args.use_internal_rag_qa and hasattr(hipporag, "llm_model"):
         try:
-            hipporag.llm_model.llm_config.generate_params["seed"] = args.seed
             hipporag.llm_model.llm_config.generate_params["temperature"] = 0.7
-            print(f"[internal rag_qa] generate_params override: seed={args.seed}, temperature=0.7")
+            print(f"[internal rag_qa] generate_params override: temperature=0.7")
         except Exception as e:
             print(f"[warn] could not override library generate_params: {e}")
 
@@ -361,7 +358,7 @@ def main():
         timeout=120.0,
     )
     llm_model_id = args.model_id
-    print(f"\nLLM client target: {args.api_base}, model={llm_model_id}, seed={args.seed}")
+    print(f"\nLLM client target: {args.api_base}, model={llm_model_id}")
 
     _t_inf_start = time.perf_counter()
     processed_count, skipped_count = asyncio.run(
