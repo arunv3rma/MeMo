@@ -6,9 +6,9 @@ This directory contains baseline methods used in the MeMo paper. Five methods ar
 |---|---|---|
 | BM25 | `bm25/` | Lexical retrieval |
 | NV-Embed-V2 | `nv_embed/` | Dense embedding retrieval |
-| HippoRAG2 | `hipporag2/` | Graph-augmented RAG |
-| In-Context Learning | `icl/` | Full-context QA with no retrieval |
-| Cartridges | `cartridges/` | KV-cache distillation |
+| [HippoRAG2](https://github.com/osu-nlp-group/hipporag) | `hipporag2/` | Graph-augmented RAG |
+| In-Context Learning | `icl/` | In-context QA with no retrieval, giving either all documents or no documents at all |
+| [Cartridges](https://github.com/HazyResearch/cartridges) | `cartridges/` | KV-cache distillation |
 
 Three benchmarks are supported across the methods:
 
@@ -71,8 +71,6 @@ Source files come from the [MeMo dataset on Hugging Face](https://huggingface.co
 
 | File | Purpose |
 |---|---|
-| `hipporag2_dataset/musique.json` | 1000 pre-selected MuSiQue validation questions with paragraphs |
-| `hipporag2_dataset/musique_corpus.json` | Companion corpus |
 | `baselines/data/musique_corpus_chunks_1000.jsonl` | Chunked corpus (seed-sweep `CORPUS`) |
 | `baselines/data/musique_questions_chunks_1000.jsonl` | Chunked questions (seed-sweep `QUESTIONS`) |
 
