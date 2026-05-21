@@ -47,48 +47,52 @@ All benchmark inputs land under `baselines/data/`. The scripts and ICL runners r
 
 ### BrowseComp-Plus (BCP)
 
-BCP is distributed in **encrypted form** on Hugging Face to prevent benchmark contamination. The download/decrypt scripts in `data_processing_utils/` are adapted from [Tevatron/browsecomp-plus](https://huggingface.co/datasets/Tevatron/browsecomp-plus) and [Tevatron/browsecomp-plus-corpus](https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus).
+BCP question/corpus text is distributed in **encrypted form** on Hugging Face (via Tevatron) to prevent benchmark contamination; the auxiliary subset / negative-doc files live in the [MeMo HF repo](https://huggingface.co/datasets/Glow-AI/MeMo) under `corpus_documents/browsecomp_plus/`. The download/decrypt scripts in `data_processing_utils/` are adapted from [Tevatron/browsecomp-plus](https://huggingface.co/datasets/Tevatron/browsecomp-plus) and [Tevatron/browsecomp-plus-corpus](https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus).
 
 > **Important:** Decrypted BCP data must never be committed to a public repository or shared online in plaintext.
 
 ```bash
-# 1. Retrieval corpus → output/full_corpus_<split>.jsonl
+# 1. Retrieval corpus → output/full_corpus_<split>.jsonl  (from Tevatron)
 python data_processing_utils/download_browsecomplus_corpus.py
 
-# 2. Questions (downloads + decrypts) → browsecomp_plus_questions.jsonl
+# 2. Questions (downloads + decrypts) → browsecomp_plus_questions.jsonl  (from Tevatron)
 python data_processing_utils/download_browsecomplus_questions.py
 ```
 
-Move the outputs into `baselines/data/` so the runners find them:
+From the MeMo HF repo (`corpus_documents/browsecomp_plus/`):
+- `bcp_subset300_queries_id.json` — 300-question subset IDs used by the ICL runners (default `--query_ids_file`)
+- `bcp_negative_N_doc_ids_per_query.json` — negative doc IDs per query (consumed by `--include_negatives`)
+
+Move all outputs into `baselines/data/` so the runners find them:
 - `baselines/data/browsecomp_plus_questions.jsonl` — used by ICL (`--questions_file`) and the seed-sweep scripts (`QUESTIONS`)
 - `baselines/data/browsecomp_plus/full_corpus_train.jsonl` — used by the seed-sweep scripts (`CORPUS`)
+- `baselines/data/browsecomp_plus/bcp_subset300_queries_id.json`
+- `baselines/data/browsecomp_plus/bcp_negative_N_doc_ids_per_query.json`
 
-Each question is a JSON object with `query_id`, `query`, `answer`, `evidence_docs`, `gold_docs`. By default the ICL runners restrict to the 300-question subset in `data_synthesis_pipeline/data_subsets/bcp_300_queries_id.json`; override with `--query_ids_file`.
+Each question is a JSON object with `query_id`, `query`, `answer`, `evidence_docs`, `gold_docs`. **Expected question count: 300**
 
 ### MuSiQue (MSQ)
 
-Source files come from the [MeMo dataset on Hugging Face](https://huggingface.co/datasets/Glow-AI/MeMo), under `corpus_documents/musique/`. The chunked variants are generated locally with `convert_musique_to_chunks_jsonl.py`.
+Pull directly from the [MeMo dataset on Hugging Face](https://huggingface.co/datasets/Glow-AI/MeMo), under `corpus_documents/musique/`:
 
-| File | Purpose |
-|---|---|
-| `hipporag2_dataset/musique.json` | 1000 pre-selected MuSiQue validation questions with paragraphs |
-| `hipporag2_dataset/musique_corpus.json` | Companion corpus |
-| `baselines/data/musique_corpus_chunks_1000.jsonl` | Chunked corpus (seed-sweep `CORPUS`) |
-| `baselines/data/musique_questions_chunks_1000.jsonl` | Chunked questions (seed-sweep `QUESTIONS`) |
+| HF file | Local path | Purpose |
+|---|---|---|
+| `corpus_documents/musique/musique_corpus_chunks_1000.jsonl` | `baselines/data/musique_corpus_chunks_1000.jsonl` | Chunked corpus (seed-sweep `CORPUS`) |
+| `corpus_documents/musique/musique_questions_chunks_1000.jsonl` | `baselines/data/musique_questions_chunks_1000.jsonl` | Chunked questions (seed-sweep `QUESTIONS`) |
+| `corpus_documents/musique/musique_negative_N_doc_ids_per_query.json` | `baselines/data/musique_negative_N_doc_ids_per_query.json` | Negative doc IDs per query |
 
-Chunking is technically optional for MSQ — all 1000 documents are under ~8.5k tokens so each paragraph produces exactly one chunk at default settings — but we use the chunked format for consistency with other baselines.
+Chunking is technically optional for MSQ — all documents are under ~8.5k tokens so each paragraph produces exactly one chunk at default settings — but we use the chunked format for consistency with other baselines. **Expected question count: 1000**
 
 ### NarrativeQA (NQA)
 
-Skip this section if pulling directly from the [MeMo HF repo](https://huggingface.co/datasets/Glow-AI/MeMo) (`corpus_documents/narrativeqa/`).
+Pull directly from the [MeMo HF repo](https://huggingface.co/datasets/Glow-AI/MeMo), under `corpus_documents/narrativeqa/`:
 
-Otherwise, clone the NarrativeQA dataset locally per `data_processing_utils/README.md` (clone, pip install, `download_stories.py`). The ICL runners default `--data_dir` to `~/narrativeqa-master`. Questions/answers come from `qaps.csv`; full story text from `tmp/{document_id}.content` (full-story script only).
+| HF file | Local path | Purpose |
+|---|---|---|
+| `corpus_documents/narrativeqa/narrativeqa_valid_corpus_chunks.jsonl` | `baselines/data/narrativeqa_valid_corpus_chunks.jsonl` | Corpus (seed-sweep `CORPUS`) |
+| `corpus_documents/narrativeqa/narrativeqa_valid_questions_chunks.jsonl` | `baselines/data/narrativeqa_valid_questions_chunks.jsonl` | Questions (seed-sweep `QUESTIONS`) |
 
 Evaluation is restricted to the 10-document `DOC_ID_SUBSET` baked into each script — the same 10 docs used by the HippoRAG2 paper. **Expected question count: 293**: the original NarrativeQA repo yields 294 questions across these IDs, but we drop one exact duplicate (`"Where does Hi get a job at?"`) to match the HippoRAG2 paper.
-
-The seed-sweep scripts expect:
-- `baselines/data/narrativeqa_dev_10_doc_corpus.json` — corpus (`CORPUS`)
-- `baselines/data/nqa_question.json` — questions (`QUESTIONS`)
 
 ## Quick start: per-method seed sweeps
 
@@ -101,7 +105,7 @@ The seed-sweep scripts expect:
    bash baselines/scripts/run_nv_embed_{bcp,musique,nqa}_qwen_seeds.sh
    bash baselines/scripts/run_cartridges_{bcp,musique,nqa}_qwen_seeds.sh
    ```
-   Each sweeps seeds for that method/benchmark and calls `aggregate_seeds.py` at the end.
+   Each sweeps 3 independent runs for that method/benchmark and calls `aggregate_seeds.py` at the end.
 
 ## Running ICL
 
@@ -138,6 +142,8 @@ The `cartridges/main.py` entrypoint runs the single-turn cartridge inference loo
 
 ## Evaluation
 
-Evaluation is done with `baselines/utils/deepeval_via_algo_utils.py`, which wraps `evaluation_pipeline/deepeval_utils.run_evaluation` (the MeMo paper's correctness metric). You normally don't invoke it directly — the seed-sweep scripts call it per seed, and `baselines/scripts/run_deepeval.sh` is the standalone orchestrator if you want to re-evaluate generated answer JSONs without re-running inference.
+Correctness scoring uses the [DeepEval](https://github.com/confident-ai/deepeval) framework with OpenAI's **gpt-5-nano** as the LLM-as-a-judge model (accessed via OpenRouter). Concretely, `baselines/utils/deepeval_via_algo_utils.py` wraps `evaluation_pipeline/deepeval_utils.run_evaluation`, which is the MeMo paper's correctness metric built on top of DeepEval. See [`evaluation_pipeline/README.md`](../evaluation_pipeline/README.md) for the full description of the judge setup, prompt templates, and the required env vars (`OPENROUTER_BASE_URL`, `OPENROUTER_API_KEY`, `OPENROUTER_MODEL_NAME=gpt-5-nano`).
+
+You don't have to invoke the evaluator directly as the seed-sweep scripts call it per seed, and `baselines/scripts/run_deepeval.sh` is the standalone orchestrator if you want to re-evaluate generated answer JSONs without re-running inference.
 
 For per-seed result aggregation, `scripts/aggregate_seeds.py` combines individual seed JSONs into a `combined_<method>_<bench>_<model>_<timestamp>.json` summary. The seed-sweep scripts call this automatically at the end.
