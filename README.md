@@ -82,11 +82,11 @@ Accuracy (%) on three knowledge-intensive benchmarks, reported as **Qwen2.5-32B-
 
 | Method | BrowseComp-Plus | NarrativeQA | MuSiQue |
 | :--- | :---: | :---: | :---: |
+| *Perfect Retrieval (oracle)* | *79.67 / 88.33* | *51.42 / 60.41* | *62.83 / 73.00* |
 | BM25 | 1.11 / 27.00 | 10.24 / 14.33 | 20.00 / 23.20 |
 | NV-Embed-V2 | 50.67 / 57.00 | 20.59 / 26.62 | 37.47 / 46.60 |
 | HippoRAG2 | **56.11** / 66.33 | 21.39 / 23.21 | 42.17 / 57.00 |
 | **MeMo (Ours)** | 54.22 / **66.67** | **26.85** / **53.58** | **48.30** / **60.20** |
-| *Perfect Retrieval (oracle)* | *79.67 / 88.33* | *51.42 / 60.41* | *62.83 / 73.00* |
 
 **At a glance**
 
