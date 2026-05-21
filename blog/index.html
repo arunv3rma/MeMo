@@ -414,7 +414,7 @@ body { font-feature-settings: "kern" 1 }
       <div>
         <span class="name">Alok Prakash</span><sup>9</sup>&ensp;
         <span class="name">Nancy F. Chen</span><sup>3</sup>&ensp;
-        <span class="name">Bryan Kian Hsiang Low</span><sup>1,2,4,9</sup>&ensp;
+        <span class="name">Bryan Kian Hsiang Low</span><sup>1,2,4,8,9</sup>&ensp;
         <span class="name">Daniela Rus</span><sup>7,9</sup>&ensp;
         <span class="name">Armando Solar-Lezama</span><sup>7,9</sup>
       </div>
@@ -499,15 +499,15 @@ body { font-feature-settings: "kern" 1 }
         <tbody>
           <tr>
             <td>Non-parametric (RAG, ICL)</td>
-            <td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td>
+            <td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span><sup>2</sup></td>
           </tr>
           <tr>
             <td>Parametric (Continual Pre-Training (CPT), Supervised Fine-Tuning (SFT))</td>
-            <td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td>
+            <td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td>
           </tr>
           <tr>
             <td>Latent Memory</td>
-            <td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td>
+            <td><span class="ck">✓</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="ck">✓</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td>
           </tr>
           <tr class="mr">
             <td><strong>MeMo (Ours)</strong></td>
@@ -515,6 +515,11 @@ body { font-feature-settings: "kern" 1 }
           </tr>
         </tbody>
       </table>
+      <p class="fn">
+        <sup>2</sup>We assume a fixed, task-agnostic embedding model decoupled from the executive model
+        for RAG, enabling the retrieval index to be reused across models. For ICL, prompts are assumed
+        to be raw-text-based, free of model-specific formatting.
+      </p>
     </section>
 
     <hr>
