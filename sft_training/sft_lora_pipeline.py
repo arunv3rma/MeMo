@@ -191,6 +191,12 @@ def format_as_chat(example: dict, tokenizer) -> dict:
         tokenize=False,
         add_generation_prompt=False,
     )
+    # TRL tokenizes the "text" field with add_special_tokens=True, so tokenizers
+    # that add BOS themselves (Gemma3, LFM2) would get a second BOS from the
+    # template. Drop the template's copy in that case.
+    bos = tokenizer.bos_token
+    if bos and text.startswith(bos) and tokenizer("")["input_ids"][:1] == [tokenizer.bos_token_id]:
+        text = text[len(bos):]
     return {"text": text}
 
 
