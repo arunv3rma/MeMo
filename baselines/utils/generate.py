@@ -32,6 +32,9 @@ def _parse_answer(output):
         stripped = stripped.strip()
     try:
         parsed = json.loads(stripped)
+        if not isinstance(parsed, dict):
+            # Bare JSON scalar/list answer, e.g. 1945 or "Paris".
+            return str(parsed)
         lower = {k.lower(): v for k, v in parsed.items()}
         return str(lower.get("answer", "N/A"))
     except json.JSONDecodeError:

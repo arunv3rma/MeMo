@@ -62,11 +62,16 @@ def encode_corpus_ultra_safe(model, corpus_texts):
             print("OOM on chunk, clearing cache and skipping...")
             torch.cuda.empty_cache()
             gc.collect()
+            # Keep a placeholder so embedding rows stay aligned with corpus_texts /
+            # corpus_docids; it is filled with zeros below (never retrieved first).
+            all_embeddings.append(None)
             continue
     torch.cuda.empty_cache()
     gc.collect()
-    if not all_embeddings:
+    real = [e for e in all_embeddings if e is not None]
+    if not real:
         raise ValueError("No embeddings generated!")
+    all_embeddings = [e if e is not None else torch.zeros_like(real[0]) for e in all_embeddings]
     return torch.cat(all_embeddings, dim=0)
 
 

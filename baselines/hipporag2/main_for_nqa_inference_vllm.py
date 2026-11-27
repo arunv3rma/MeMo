@@ -181,7 +181,7 @@ def main():
             rec['error'] = entry['error']
         (successful if rec['model_response'] is not None else failed).append(rec)
 
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    os.makedirs(os.path.dirname(args.output) or '.', exist_ok=True)
     with open(args.output, 'w', encoding='utf-8') as f:
         json.dump(successful, f, indent=4, ensure_ascii=False)
     if failed:
