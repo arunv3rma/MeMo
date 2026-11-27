@@ -49,6 +49,19 @@ def _score_for(test_result):
     return 0.0, "No metric data", False
 
 
+def _restore_input_order(test_results, n_inputs):
+    """Return test_results sorted back into input order, with None for gaps."""
+    by_index = {}
+    for tr in test_results:
+        name = getattr(tr, "name", "") or ""
+        prefix, _, idx = name.rpartition("_")
+        if prefix != "test_case" or not idx.isdigit():
+            # Unknown naming scheme: leave the list as deepeval returned it.
+            return test_results
+        by_index[int(idx)] = tr
+    return [by_index.get(i) for i in range(n_inputs)]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Baseline QA eval via algo deepeval_utils")
     parser.add_argument("--generated_file_path", type=str, required=True)
@@ -91,11 +104,16 @@ def main():
     if len(test_results) != len(qa_results):
         print(f"WARNING: got {len(test_results)} test results for {len(qa_results)} inputs")
 
+    # In async mode deepeval appends each TestResult when it finishes, so the
+    # list is in completion order, not input order. Put each result back at its
+    # input position using the "test_case_<index>" name deepeval assigns.
+    test_results = _restore_input_order(test_results, len(qa_results))
+
     detailed_results = []
     accuracy_scores = []
     question_types = {}
     for idx, original in enumerate(qa_results):
-        if idx < len(test_results):
+        if idx < len(test_results) and test_results[idx] is not None:
             score, reason, success = _score_for(test_results[idx])
         else:
             score, reason, success = 0.0, "No score recorded", False
