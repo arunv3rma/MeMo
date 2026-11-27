@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
 
 from hipporag import HippoRAG
+from openai import OpenAI
 
 from .main_for_bcp import main_async
 
@@ -140,6 +141,10 @@ def main():
 
     p.add_argument("--skip_index", action="store_true",
                    help="Skip the indexing phase (reuse existing save_dir).")
+    p.add_argument("--seed", type=int, default=1,
+                   help="Seed forwarded to the inference LLM (read by process_question).")
+    p.add_argument("--use_internal_rag_qa", action="store_true",
+                   help="Use HippoRAG's built-in rag_qa() instead of the canonical JSON QA prompt.")
 
     args = p.parse_args()
 
@@ -202,7 +207,12 @@ def main():
 
     hipporag_lock = threading.Lock()
 
-    processed, skipped = asyncio.run(main_async(args, hipporag, data, hipporag_lock))
+    # main_async/process_question answer via an explicit OpenAI-compatible client.
+    llm_client = OpenAI(base_url=args.inference_api_base, api_key=inference_key, timeout=120.0)
+    llm_model_id = args.inference_model_id
+    processed, skipped = asyncio.run(
+        main_async(args, hipporag, data, hipporag_lock, llm_client, llm_model_id)
+    )
     print(f"\nProcessed: {processed}, Failed: {skipped}")
 
     successful, failed = [], []
@@ -226,7 +236,7 @@ def main():
             rec['error'] = entry['error']
         (successful if rec['model_response'] is not None else failed).append(rec)
 
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    os.makedirs(os.path.dirname(args.output) or '.', exist_ok=True)
     with open(args.output, 'w', encoding='utf-8') as f:
         json.dump(successful, f, indent=4, ensure_ascii=False)
     if failed:

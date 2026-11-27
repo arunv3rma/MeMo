@@ -388,7 +388,7 @@ def main():
             failed_data.append(entry_copy)
 
     # 7. Save outputs
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    os.makedirs(os.path.dirname(args.output) or '.', exist_ok=True)
     with open(args.output, 'w', encoding='utf-8') as f:
         json.dump(successful_data, f, indent=4, ensure_ascii=False)
 

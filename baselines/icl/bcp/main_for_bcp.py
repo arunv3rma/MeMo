@@ -45,7 +45,7 @@ JUDGE_MODEL = "google/gemini-2.5-flash-lite"
 
 _THIS_DIR = os.path.dirname(__file__)
 DEFAULT_QUERY_IDS_FILE = os.path.join(
-    _THIS_DIR, "../../data_synthesis_pipeline/data_subsets/bcp_300_queries_id.json"
+    _THIS_DIR, "../../../data_synthesis_pipeline/data_subsets/bcp_300_queries_id.json"
 )
 
 
