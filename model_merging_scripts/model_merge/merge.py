@@ -97,7 +97,7 @@ class SlerpMerger(MergeMethod):
         # Dot product and angle calculation
         dot = (v0_normalized * v1_normalized).sum()
         if dot.abs() > dot_threshold:
-            return (1 - t) * v0 + t * v1
+            return ((1 - t) * v0 + t * v1).to(original_dtype)
 
         theta_0 = torch.arccos(dot.clamp(-1.0, 1.0))
         sin_theta_0 = torch.sin(theta_0)
@@ -173,11 +173,16 @@ class TaskArithmetic(MergeMethod):
         combinations of model deltas with optional consensus filtering and normalization.
 
         Args:
-            tensors: List of tensors to merge, with the first tensor being the base.
+            tensors: [base, model_1, ..., model_n]. weights/densities index the n
+                source models (weights[i] and densities[i] belong to model_{i+1}).
 
         Returns:
             Merged tensor combining the base with weighted deltas from other models.
         """
+        if len(tensors) != self.num_models + 1:
+            raise ValueError(
+                f"Expected base + {self.num_models} model tensors, got {len(tensors)}"
+            )
         base_tensor = tensors[0]
         # Preserve original dtype
         original_dtype = base_tensor.dtype
@@ -190,9 +195,7 @@ class TaskArithmetic(MergeMethod):
         weights_list = []
 
         # Calculate deltas and collect weights
-        for i, (tensor, weight) in enumerate(
-            zip(work_tensors, self.weights[1:]), start=1
-        ):
+        for i, (tensor, weight) in enumerate(zip(work_tensors, self.weights)):
             delta = tensor - base_tensor
             if self.sparsification_method:
                 delta = self._sparsify(delta, i)

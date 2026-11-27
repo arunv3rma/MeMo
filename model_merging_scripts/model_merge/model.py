@@ -162,6 +162,14 @@ class Model:
                 self.state_dict[key] = merger.merge_tensor([base_t, tgt_t])
 
         # ---- Branch: all other methods (existing behavior) ----
+        elif isinstance(merger, TaskArithmetic):
+            # Task-vector methods: deltas are taken against the base model, which
+            # TaskArithmetic.merge_tensor expects as tensors[0].
+            if not self.base_dict:
+                raise ValueError(f"'{self.method}' requires a base model (--base).")
+            for key in tqdm(self.base_dict.keys(), desc=f"Merging with {self.method}"):
+                tensors = [self.base_dict[key]] + [sd[key] for sd in self.source_dicts]
+                self.state_dict[key] = merger.merge_tensor(tensors)
         else:
             base_dict = self.base_dict if self.base_dict else self.source_dicts[0]
             for key in tqdm(base_dict.keys(), desc=f"Merging with {self.method}"):
