@@ -23,7 +23,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--density",
-        default=0.5,
+        default=None,
         type=float,
         nargs="+",
         help="Density factors for task arithmetic sparsification. Must match number of models.",

@@ -30,9 +30,4 @@ setup(
         "tqdm",
         "numpy",
     ],
-    entry_points={
-        "console_scripts": [
-            "model_merge=model_merge.main:main",
-        ],
-    },
 )
