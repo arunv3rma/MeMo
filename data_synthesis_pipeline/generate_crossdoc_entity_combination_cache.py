@@ -804,8 +804,6 @@ async def main(args: argparse.Namespace) -> None:
         questions = load_questions_with_evidence_docs_nqa(args.qns_path, args.max_num_questions)
     elif args.dataset == "musique":
         questions = load_questions_with_evidence_docs_musique(args.qns_path, args.max_num_questions)
-    elif args.dataset == "lveval":
-        questions = load_questions_with_evidence_docs_lveval(args.qns_path, args.max_num_questions)
     else:
         questions = load_questions_with_evidence_docs(args.qns_path, args.max_num_questions)
     print(f"  Questions loaded: {len(questions)}\n")
@@ -937,8 +935,8 @@ def parse_args() -> argparse.Namespace:
                    help="Path to questions JSONL (browsecomp_plus_questions.jsonl)")
     p.add_argument("--max_num_questions", type=int, default=None,
                    help="Max number of valid questions to load (same subset as rest of pipeline)")
-    p.add_argument("--dataset", type=str, default="bcp", choices=["bcp", "nqa", "musique", "lveval"],
-                   help="Dataset type: 'bcp' (BrowseComp+), 'nqa' (NarrativeQA), 'musique' (MuSiQue), or 'lveval' (LV-Eval)")
+    p.add_argument("--dataset", type=str, default="bcp", choices=["bcp", "nqa", "musique"],
+                   help="Dataset type: 'bcp' (BrowseComp+), 'nqa' (NarrativeQA), or 'musique' (MuSiQue)")
     p.add_argument("--resume_checkpoint", type=str, default=None,
                    help="Path to a prior checkpoint to resume from")
 

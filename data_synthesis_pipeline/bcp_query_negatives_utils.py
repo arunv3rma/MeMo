@@ -1,7 +1,7 @@
 import os
 import json
 
-data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'final_generated_data')
+data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_subsets')
 
 with open(os.path.join(data_dir, 'bcp_negative_N_doc_ids_per_query.json'), 'r', encoding='utf-8') as f:
     NEGATIVE_DOC_IDS_PER_QUERY = json.load(f)

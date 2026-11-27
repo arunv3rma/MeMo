@@ -767,6 +767,18 @@ def aggregate_results_by_query(
 # ---------------------------------------------------------------------------
 
 async def main(args: argparse.Namespace) -> None:
+    # ---- Passthrough mode --------------------------------------------------
+    if args.passthrough:
+        print("[PASSTHROUGH] Skipping cross-doc combination — passing source entries through unchanged...")
+        original_entries, _ = load_surface_entity_cache(args.input_file_path)
+        output_entries = original_entries if args.include_source_qa_pairs else []
+        os.makedirs(os.path.dirname(os.path.abspath(args.output_file_path)), exist_ok=True)
+        output = {"qa_pairs_cache": output_entries}
+        with open(args.output_file_path, "w", encoding="utf-8") as f:
+            json.dump(output, f, indent=2)
+        print(f"[PASSTHROUGH] Wrote {len(output_entries)} entries → {args.output_file_path}")
+        return
+
     if args.use_openrouter and not args.model_name:
         raise ValueError("--model_name is required when using --use_openrouter")
     if not args.use_openrouter and not args.use_openai and not args.ports:
@@ -956,6 +968,10 @@ def parse_args() -> argparse.Namespace:
     # Testing
     p.add_argument("--test_mode", action="store_true",
                    help="Process only first (num_clients * 3) work items total")
+
+    # Ablation
+    p.add_argument("--passthrough", action="store_true",
+                   help="Skip cross-doc combination and pass source entries through unchanged (for ablation studies)")
 
     return p.parse_args()
 

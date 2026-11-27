@@ -627,10 +627,6 @@ async def main(args: argparse.Namespace) -> None:
             corpus_texts, corpus_docids = load_only_query_related_docs_musique(
                 args.corpus_path, args.qns_path, args.max_num_questions
             )
-        elif args.dataset == "lveval":
-            corpus_texts, corpus_docids = load_only_query_related_docs_lveval(
-                args.corpus_path, args.qns_path, args.max_num_questions
-            )
         else:
             corpus_texts, corpus_docids = load_only_query_related_docs(
                 args.corpus_path, args.qns_path, args.max_num_questions
@@ -673,10 +669,6 @@ async def main(args: argparse.Namespace) -> None:
         )
     elif args.dataset == "musique":
         corpus_texts, corpus_docids = load_only_query_related_docs_musique(
-            args.corpus_path, args.qns_path, args.max_num_questions
-        )
-    elif args.dataset == "lveval":
-        corpus_texts, corpus_docids = load_only_query_related_docs_lveval(
             args.corpus_path, args.qns_path, args.max_num_questions
         )
     else:
@@ -781,8 +773,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--corpus_path",      type=str, required=True)
     p.add_argument("--qns_path",         type=str, required=True)
     p.add_argument("--max_num_questions", type=int, default=None)
-    p.add_argument("--dataset", type=str, default="bcp", choices=["bcp", "nqa", "musique", "lveval"],
-                   help="Dataset type: 'bcp' (BrowseComp+), 'nqa' (NarrativeQA), 'musique' (MuSiQue), or 'lveval' (LV-Eval)")
+    p.add_argument("--dataset", type=str, default="bcp", choices=["bcp", "nqa", "musique"],
+                   help="Dataset type: 'bcp' (BrowseComp+), 'nqa' (NarrativeQA), or 'musique' (MuSiQue)")
     p.add_argument("--resume_checkpoint", type=str, default=None,
                    help="Path to merged checkpoint from merge_checkpoints.py")
 
