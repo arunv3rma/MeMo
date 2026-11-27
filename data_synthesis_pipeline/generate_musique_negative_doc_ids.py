@@ -77,7 +77,7 @@ def generate_2n(qns_path, n_path, output_path_2n, seed):
 
 
 if __name__ == '__main__':
-    _default_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'final_generated_data')
+    _default_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_subsets')
     parser = argparse.ArgumentParser()
     parser.add_argument('--qns_path', default='/path/to/musique_questions_chunks_1000.jsonl')
     parser.add_argument('--output_path', default=os.path.join(_default_dir, 'musique_negative_N_doc_ids_per_query.json'))

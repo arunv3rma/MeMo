@@ -32,8 +32,8 @@ def generate_n(qns_path, output_path, seed):
             if len(negative_docs) < n:
                 shortfall_counts.append((query_id, n, len(negative_docs), n - len(negative_docs)))
 
-    # with open(output_path, 'w', encoding='utf-8') as f:
-    #     json.dump(negative_doc_ids_per_query, f)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        json.dump(negative_doc_ids_per_query, f)
 
     total_queries = len(negative_doc_ids_per_query)
     print(f"Written {total_queries} query entries (N) to {output_path}")
@@ -90,8 +90,8 @@ def generate_2n(qns_path, n_path, output_path_2n, seed):
             else:
                 shortfall_counts.append((query_id, n, len(negative_docs), 2 * n - len(negative_docs)))
 
-    # with open(output_path_2n, 'w', encoding='utf-8') as f:
-    #     json.dump(negative_doc_ids_per_query_2n, f)
+    with open(output_path_2n, 'w', encoding='utf-8') as f:
+        json.dump(negative_doc_ids_per_query_2n, f)
 
     print(f"Written {len(negative_doc_ids_per_query_2n)} query entries (2N) to {output_path_2n}")
     print(f"\n2N negative doc availability check (N = number of evidence docs):")
@@ -105,11 +105,11 @@ def generate_2n(qns_path, n_path, output_path_2n, seed):
 
 
 if __name__ == '__main__':
-    _default_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'final_generated_data')
+    _default_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_subsets')
     parser = argparse.ArgumentParser()
     parser.add_argument('--qns_path', default='/path/to/browsecomp_plus_questions.jsonl')
-    parser.add_argument('--output_path', default=os.path.join(_default_dir, 'negative_N_doc_ids_per_query.json'))
-    parser.add_argument('--output_path_2n', default=os.path.join(_default_dir, 'negative_2N_doc_ids_per_query.json'))
+    parser.add_argument('--output_path', default=os.path.join(_default_dir, 'bcp_negative_N_doc_ids_per_query.json'))
+    parser.add_argument('--output_path_2n', default=os.path.join(_default_dir, 'bcp_negative_2N_doc_ids_per_query.json'))
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--skip_n', action='store_true', help='Skip N generation and use existing output_path file')
     args = parser.parse_args()
