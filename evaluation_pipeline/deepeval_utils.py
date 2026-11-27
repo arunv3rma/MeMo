@@ -305,8 +305,8 @@ def run_evaluation(client, client_model_name, data_pairs, run_id=None):
             "If the actual output directly contradicts the expected output, assign a score of 0. Extra context that does not contradict the expected answer is acceptable.",
 
             # Step 5: Scoring
-            "Assign a score of 1 if the actual output correctly answers the question consistent with the expected output, even if worded more fully or with additional context. Assign a score of 0 only if there is a clear factual mismatch, a direct contradiction, or a missing essential qualifier."
-            
+            "Assign a score of 1 if the actual output correctly answers the question consistent with the expected output, even if worded more fully or with additional context. Assign a score of 0 only if there is a clear factual mismatch, a direct contradiction, or a missing essential qualifier.",
+
             # Step 6: Specific cases
             "If the actual output is formatted differently, e.g. answered as a full sentence instead of just short phrases, it can also be considered similarly"
         ],

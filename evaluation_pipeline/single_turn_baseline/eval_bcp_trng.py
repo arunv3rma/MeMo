@@ -23,8 +23,9 @@ from deepeval_utils import run_evaluation
 def load_questions(qns_path, max_valid_questions=None):
     
     all_qns = load_questions_with_evidence_docs(qns_path, max_valid_questions)
-    if max_valid_questions is not None:
-        subset_query_ids = SUBSET_MAP[max_valid_questions]
+    if max_valid_questions is None:
+        return all_qns
+    subset_query_ids = SUBSET_MAP[max_valid_questions]
     
     filtered_qns = [qn for qn in all_qns if qn['question_no'] in subset_query_ids]
     print(f"Filtered questions count: {len(filtered_qns)}")
