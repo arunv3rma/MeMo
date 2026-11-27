@@ -19,6 +19,9 @@ mkdir -p $EVAL_DIR
 ## vLLM server config — update model paths / GPUs as needed
 ## ---------------------------------------------------------------------------
 LM_PORT=4325
+LM_GPU=0
+LM_MODEL=Qwen/Qwen2.5-32B-Instruct
+LM_MODEL_NAME=qwen2_5_32b
 
 LFM_PORT=4330
 
@@ -48,6 +51,22 @@ cleanup() {
     echo "Servers stopped."
 }
 trap cleanup EXIT
+
+# ## ---------------------------------------------------------------------------
+# ## Start the LM server (stays up for all SM iterations)
+# ## ---------------------------------------------------------------------------
+echo "Starting vLLM LM server (port ${LM_PORT}, GPU ${LM_GPU})..."
+CUDA_VISIBLE_DEVICES=$LM_GPU python3 -m vllm.entrypoints.openai.api_server \
+    --host localhost \
+    --port $LM_PORT \
+    --trust-remote-code \
+    --model $LM_MODEL \
+    --tensor-parallel-size 1 \
+    --dtype bfloat16 \
+    --served-model-name $LM_MODEL_NAME \
+    --max-model-len 131072 \
+    --rope-scaling '{"type":"yarn","factor":4.0,"original_max_position_embeddings":32768}' &
+LM_PID=$!
 
 echo "Waiting for LM server to become healthy..."
 for attempt in $(seq 1 60); do

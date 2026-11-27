@@ -455,7 +455,12 @@ def generate_answer_seeking_prompt(
         history_lines.append("")
     history_str = "\n".join(history_lines).strip()
 
-    if entity_was_confirmed:
+    if confirmed_entity is None:
+        # Entity pinning was skipped (--skip_entity_pinning) or produced no candidate.
+        entity_preamble = """No entity has been pinned for this question. Generate sub-questions that work directly toward answering the original question, naming any specific entities explicitly rather than using vague references."""
+        # The rest of the template names the entity; use a neutral stand-in, not "None".
+        confirmed_entity = "the key entity in the question"
+    elif entity_was_confirmed:
         entity_preamble = f"""The entity this question is about has been confirmed as: {confirmed_entity}
 
 Every sub-question you generate MUST embed the name "{confirmed_entity}" directly. Never refer to it as "the entity", "they", "it", or any vague reference."""

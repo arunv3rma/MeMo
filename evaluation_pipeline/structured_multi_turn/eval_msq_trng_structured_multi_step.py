@@ -360,6 +360,10 @@ async def process_single_question(
 
         except Exception as e:
             print(f"Error in entity-pinning turn {entity_turn + 1} for question {question_idx}: {e}")
+            # `break` skips the for-else fallback below, so fall back to the
+            # best candidate gathered so far instead of discarding them.
+            confirmed_entity, _ = _pick_best_candidate(candidate_entities)
+            entity_was_confirmed = False
             break
 
     else:

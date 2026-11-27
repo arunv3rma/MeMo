@@ -82,8 +82,9 @@ from deepeval_utils import run_evaluation
 
 def load_questions(qns_path, max_valid_questions=None):
     all_qns = load_questions_with_evidence_docs(qns_path, max_valid_questions)
-    if max_valid_questions is not None:
-        subset_query_ids = SUBSET_MAP[max_valid_questions]
+    if max_valid_questions is None:
+        return all_qns
+    subset_query_ids = SUBSET_MAP[max_valid_questions]
     filtered_qns = [qn for qn in all_qns if qn['question_no'] in subset_query_ids]
     print(f"Filtered questions count: {len(filtered_qns)}")
     return filtered_qns
@@ -386,6 +387,10 @@ async def process_single_question(
 
         except Exception as e:
             print(f"Error in entity-pinning turn {entity_turn + 1} for question {question_idx}: {e}")
+            # `break` skips the for-else fallback below, so fall back to the
+            # best candidate gathered so far instead of discarding them.
+            confirmed_entity, _ = _pick_best_candidate(candidate_entities)
+            entity_was_confirmed = False
             break
 
     else:
