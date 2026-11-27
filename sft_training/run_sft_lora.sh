@@ -277,7 +277,7 @@ accelerate launch --config_file accelerate_config.yaml sft_lora_pipeline.py \
     --lora_r 8 \
     --lora_alpha 16 \
     --lora_dropout 0.05 \
-    --lora_target_modules q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj \
+    --lora_target_modules q_proj,k_proj,v_proj,out_proj,in_proj,w1,w2,w3 \
     --logging_steps 100 \
     --save_only_model \
     --world_size 2 \
@@ -303,7 +303,7 @@ accelerate launch --config_file accelerate_config.yaml sft_lora_pipeline.py \
     --lora_r 8 \
     --lora_alpha 16 \
     --lora_dropout 0.05 \
-    --lora_target_modules q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj \
+    --lora_target_modules q_proj,k_proj,v_proj,out_proj,in_proj,w1,w2,w3 \
     --logging_steps 100 \
     --save_only_model \
     --world_size 2 \
@@ -329,7 +329,7 @@ accelerate launch --config_file accelerate_config.yaml sft_lora_pipeline.py \
     --lora_r 8 \
     --lora_alpha 16 \
     --lora_dropout 0.05 \
-    --lora_target_modules q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj \
+    --lora_target_modules q_proj,k_proj,v_proj,out_proj,in_proj,w1,w2,w3 \
     --logging_steps 100 \
     --save_only_model \
     --world_size 2 \
